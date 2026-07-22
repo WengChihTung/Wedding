@@ -1,8 +1,2 @@
-
-document.getElementById("play").addEventListener("click",()=>{
-const box=document.getElementById("player");
-const video=document.getElementById("video");
-box.classList.remove("hidden");
-video.play();
-box.scrollIntoView({behavior:"smooth"});
-});
+document.getElementById('play').onclick=()=>{player.classList.remove('hidden');video.play();}
+document.querySelectorAll('.panel').forEach((p,i)=>{p.animate([{opacity:0,transform:'translateY(40px)'},{opacity:1,transform:'translateY(0)'}],{duration:700,delay:i*120,fill:'both'});});
