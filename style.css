@@ -109,3 +109,32 @@ letter-spacing:4px;
 }
 .btn:hover{background:transparent;color:var(--gold);padding-left:64px}
 .scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:2;color:#fff;letter-spacing:4px;font-size:.8rem;opacity:.8}
+
+
+/* ===== Wedding V3 Phase 1 ===== */
+:root{
+ --bg:#f7f4ef;
+ --accent:#b9975b;
+ --text:#2d2a26;
+}
+html{scroll-behavior:smooth;}
+body{
+ background:var(--bg);
+ color:var(--text);
+ font-family:"Noto Serif TC",serif;
+}
+h1,h2,h3{
+ font-family:"Cormorant Garamond","Noto Serif TC",serif;
+ letter-spacing:.04em;
+}
+section{
+ padding-top:96px;
+ padding-bottom:96px;
+}
+button,.btn,a.button{
+ border-radius:999px;
+ transition:.3s ease;
+}
+button:hover,.btn:hover,a.button:hover{
+ transform:translateY(-2px);
+}
