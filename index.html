@@ -1,56 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="theme-color" content="#f5f1ea">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Noto+Serif+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jason & 恩恩 | Wedding Invitation</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#eee5dc">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>Jason & 恩恩｜婚禮請柬</title>
+  <link rel="stylesheet" href="style.css?v=20260723">
 </head>
 <body>
-<section class="hero">
-<div class="overlay"></div>
-<div class="hero-content">
-<p class="eyebrow">A Love Written in Time</p>
-<h1>Jason<br><span>&</span><br>恩恩</h1>
-<p class="subtitle">Wedding Invitation</p><p class="date">September 12, 2026</p>
-<a href="#info" class="btn">Enter</a>
-</div><div class="scroll-hint">↓ SCROLL</div>
-</section>
+  <main class="invitation" id="invitation" aria-label="Jason 與恩恩的婚禮請柬">
+    <section class="page page--cover is-active" data-page="1">
+      <div class="photo photo--cover"></div>
+      <div class="veil"></div>
+      <div class="cover-copy">
+        <p class="overline">WE ARE GETTING MARRIED</p>
+        <p class="names">Jason <i>&amp;</i> 恩恩</p>
+        <span class="hairline"></span>
+        <p class="cover-date">2026 . 09 . 12</p>
+      </div>
+      <button class="discover" type="button" data-next aria-label="開啟請柬"><span>OPEN</span><b>⌄</b></button>
+    </section>
 
-<section id="info" class="panel">
-<h2>Wedding</h2>
-<div class="card">
-<p><strong>證婚</strong> 10:00</p>
-<p><strong>Candy Bar</strong> 11:00</p>
-<p><strong>喜宴</strong> 12:00</p>
-<p><strong>地點</strong><br>翡麗詩莊園 2F 天翼廳</p>
-</div>
-</section>
+    <section class="page page--message" data-page="2">
+      <div class="botanical botanical--left">✦</div>
+      <div class="page-copy message-copy">
+        <p class="overline">WEDDING INVITATION</p>
+        <h1>婚禮請柬</h1>
+        <p class="lead">我們決定攜手，走進人生的下一段旅程。<br>誠摯邀請您，來見證這份幸福。</p>
+        <p class="signature">Jason &amp; 恩恩 敬邀</p>
+      </div>
+      <div class="botanical botanical--right">✦</div>
+    </section>
 
-<section class="panel quote">
-<p>時光靜好，與君語。<br>細水流年，與君同。</p>
-</section>
+    <section class="page page--schedule" data-page="3">
+      <div class="page-copy">
+        <p class="overline">THE DAY</p>
+        <h2>婚禮時程</h2>
+        <div class="date-stamp"><span>SEP</span><strong>12</strong><span>2026</span></div>
+        <dl class="timeline">
+          <div><dt>10:00</dt><dd>證婚儀式</dd></div>
+          <div><dt>11:00</dt><dd>Candy Bar</dd></div>
+          <div><dt>12:00</dt><dd>喜宴開始</dd></div>
+        </dl>
+      </div>
+    </section>
 
-<section class="panel film">
-<h2>Wedding Film</h2>
-<p>播放我們的故事</p>
-<button id="play">▶ Play</button>
+    <section class="page page--venue" data-page="4">
+      <div class="photo photo--venue"></div>
+      <div class="veil veil--light"></div>
+      <div class="page-copy venue-copy">
+        <p class="overline">LOCATION</p>
+        <h2>翡麗詩莊園</h2>
+        <p>2F 天翼廳</p>
+        <span class="hairline"></span>
+        <p class="address">台北市中山區<br>樂群三路 303 號</p>
+        <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E7%BF%A1%E9%BA%97%E8%A9%A9%E8%8E%8A%E5%9C%92" target="_blank" rel="noopener">查看地圖 <span>→</span></a>
+      </div>
+    </section>
 
-<div id="player" class="hidden">
-<video id="video" controls playsinline preload="none" width="100%">
-<source src="assets/video/wedding.mp4" type="video/mp4">
-</video>
-</div>
-</section>
+    <section class="page page--film" data-page="5">
+      <div class="page-copy">
+        <p class="overline">OUR STORY</p>
+        <h2>Wedding Film</h2>
+        <p class="lead">有些故事，值得用一生慢慢訴說。</p>
+        <button id="play" class="play-button" type="button" aria-controls="player"><span>▶</span> 播放我們的故事</button>
+        <div id="player" class="player" hidden>
+          <video id="video" controls playsinline preload="metadata">
+            <source src="assets/video/wedding.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </section>
 
-<footer>
-Thank you.<br>期待與您相聚
-</footer>
+    <section class="page page--thanks" data-page="6">
+      <div class="photo photo--cover photo--thanks"></div>
+      <div class="veil"></div>
+      <div class="page-copy thanks-copy">
+        <p class="overline">WITH LOVE</p>
+        <h2>期待與您相聚</h2>
+        <p>願這一天的喜悅，因您的到來而完整。</p>
+        <p class="names names--small">Jason <i>&amp;</i> 恩恩</p>
+      </div>
+    </section>
+  </main>
 
-<script src="script.js"></script>
+  <aside class="pager" aria-label="請柬頁面導覽">
+    <button type="button" data-prev aria-label="上一頁">↑</button>
+    <span><b id="page-current">01</b><i></i><em id="page-total">06</em></span>
+    <button type="button" data-next aria-label="下一頁">↓</button>
+  </aside>
+  <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+  <script src="script.js?v=20260723"></script>
 </body>
 </html>
