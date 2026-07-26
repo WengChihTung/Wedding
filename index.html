@@ -2,97 +2,228 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#eee5dc">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#eee9df">
+  <meta name="description" content="翁志彤與鄭涵文的婚禮邀請｜2026 年 9 月 12 日">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <title>Jason & 恩恩｜婚禮請柬</title>
-  <link rel="stylesheet" href="style.css?v=20260723">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Noto+Serif+TC:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <title>志彤 &amp; 涵文｜婚禮邀請</title>
+  <link rel="stylesheet" href="style.css?v=20260726e">
 </head>
 <body>
-  <main class="invitation" id="invitation" aria-label="Jason 與恩恩的婚禮請柬">
-    <section class="page page--cover is-active" data-page="1">
-      <div class="photo photo--cover"></div>
-      <div class="veil"></div>
-      <div class="cover-copy">
-        <p class="overline">WE ARE GETTING MARRIED</p>
-        <p class="names">Jason <i>&amp;</i> 恩恩</p>
-        <span class="hairline"></span>
-        <p class="cover-date">2026 . 09 . 12</p>
-      </div>
-      <button class="discover" type="button" data-next aria-label="開啟請柬"><span>OPEN</span><b>⌄</b></button>
-    </section>
-
-    <section class="page page--message" data-page="2">
-      <div class="botanical botanical--left">✦</div>
-      <div class="page-copy message-copy">
-        <p class="overline">WEDDING INVITATION</p>
-        <h1>婚禮請柬</h1>
-        <p class="lead">我們決定攜手，走進人生的下一段旅程。<br>誠摯邀請您，來見證這份幸福。</p>
-        <p class="signature">Jason &amp; 恩恩 敬邀</p>
-      </div>
-      <div class="botanical botanical--right">✦</div>
-    </section>
-
-    <section class="page page--schedule" data-page="3">
-      <div class="page-copy">
-        <p class="overline">THE DAY</p>
-        <h2>婚禮時程</h2>
-        <div class="date-stamp"><span>SEP</span><strong>12</strong><span>2026</span></div>
-        <dl class="timeline">
-          <div><dt>10:00</dt><dd>證婚儀式</dd></div>
-          <div><dt>11:00</dt><dd>Candy Bar</dd></div>
-          <div><dt>12:00</dt><dd>喜宴開始</dd></div>
-        </dl>
+  <main class="invitation" id="invitation" aria-label="翁志彤與鄭涵文的婚禮邀請">
+    <section class="page page--cover is-active" data-page="1" aria-label="開啟喜帖">
+      <div class="cover-scene" aria-hidden="true"></div>
+      <div class="cover-shade" aria-hidden="true"></div>
+      <div class="envelope-wrap">
+        <p class="eyebrow light">THE WEDDING OF</p>
+        <button class="envelope" id="open-envelope" type="button" aria-label="打開信封">
+          <span class="envelope-back"></span>
+          <span class="letter">
+            <small>YOU ARE INVITED</small>
+            <b>志彤 <i>&amp;</i> 涵文</b>
+            <em>2026.09.12</em>
+          </span>
+          <span class="envelope-front"></span>
+          <span class="envelope-flap"></span>
+          <span class="seal" aria-hidden="true">囍</span>
+        </button>
+        <button class="open-hint" id="open-hint" type="button"><span>輕觸開啟喜帖</span><i></i></button>
       </div>
     </section>
 
-    <section class="page page--venue" data-page="4">
-      <div class="photo photo--venue"></div>
-      <div class="veil veil--light"></div>
-      <div class="page-copy venue-copy">
-        <p class="overline">LOCATION</p>
-        <h2>翡麗詩莊園</h2>
-        <p>2F 天翼廳</p>
-        <span class="hairline"></span>
-        <p class="address">台北市中山區<br>樂群三路 303 號</p>
-        <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E7%BF%A1%E9%BA%97%E8%A9%A9%E8%8E%8A%E5%9C%92" target="_blank" rel="noopener">查看地圖 <span>→</span></a>
+    <section class="page paper page--invitation" data-page="2">
+      <span class="page-number">01</span>
+      <div class="ornament ornament--top">✦</div>
+      <div class="page-copy invitation-copy">
+        <p class="eyebrow">WEDDING INVITATION</p>
+        <p class="invite-line">誠摯邀請您，見證我們的幸福時刻</p>
+        <h1><span>翁志彤</span><i>&amp;</i><span>鄭涵文</span></h1>
+        <div class="name-labels"><span>GROOM</span><span>BRIDE</span></div>
+        <div class="monogram">W <i>&amp;</i> C</div>
+        <p class="invitation-note">從相遇、相知，到決定牽起彼此的手<br>這一天，想與珍愛的你一起分享。</p>
       </div>
+      <button class="scroll-cue" type="button" data-next><span>繼續閱讀</span><i>↓</i></button>
     </section>
 
-    <section class="page page--film" data-page="5">
-      <div class="page-copy">
-        <p class="overline">OUR STORY</p>
-        <h2>Wedding Film</h2>
-        <p class="lead">有些故事，值得用一生慢慢訴說。</p>
-        <button id="play" class="play-button" type="button" aria-controls="player"><span>▶</span> 播放我們的故事</button>
-        <div id="player" class="player" hidden>
-          <video id="video" controls playsinline preload="metadata">
-            <source src="assets/video/wedding.mp4" type="video/mp4">
-          </video>
+    <section class="page paper page--date" data-page="3">
+      <span class="page-number">02</span>
+      <div class="date-layout">
+        <div class="calendar-card">
+          <p class="eyebrow">SAVE THE DATE</p>
+          <header><span>SEPTEMBER</span><strong>2026</strong></header>
+          <div class="weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+          <div class="dates" aria-label="2026年9月月曆">
+            <i></i><i></i><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span class="wedding-day">12<b>♥</b></span>
+            <span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span>
+            <span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span>
+            <span>27</span><span>28</span><span>29</span><span>30</span>
+          </div>
+        </div>
+        <div class="countdown-panel">
+          <p class="eyebrow">UNTIL WE SAY “I DO”</p>
+          <h2>距離我們的婚禮</h2>
+          <p class="date-written">2026 年 9 月 12 日・星期六・上午 10:00</p>
+          <div class="countdown" id="countdown" aria-live="polite">
+            <div><strong id="days">--</strong><span>天</span></div>
+            <div><strong id="hours">--</strong><span>時</span></div>
+            <div><strong id="minutes">--</strong><span>分</span></div>
+            <div><strong id="seconds">--</strong><span>秒</span></div>
+          </div>
+          <p class="countdown-finished" id="countdown-finished" hidden>今天就是我們的大日子！</p>
         </div>
       </div>
     </section>
 
-    <section class="page page--thanks" data-page="6">
-      <div class="photo photo--cover photo--thanks"></div>
-      <div class="veil"></div>
-      <div class="page-copy thanks-copy">
-        <p class="overline">WITH LOVE</p>
-        <h2>期待與您相聚</h2>
-        <p>願這一天的喜悅，因您的到來而完整。</p>
-        <p class="names names--small">Jason <i>&amp;</i> 恩恩</p>
+    <section class="page paper page--portrait page--groom" data-page="4">
+      <span class="page-number">03</span>
+      <span class="arc arc--one" aria-hidden="true"></span>
+      <span class="arc arc--two" aria-hidden="true"></span>
+      <span class="spark spark--a" aria-hidden="true">✦</span>
+      <span class="spark spark--b" aria-hidden="true">✧</span>
+      <div class="portrait-stage">
+        <div class="portrait-caption">
+          <p class="eyebrow">THE GROOM</p>
+          <span class="portrait-index">01</span>
+          <h2>翁志彤</h2>
+          <p>往後的每一天<br>都想成為妳最安心的依靠</p>
+          <small>CHIH-TUNG WENG</small>
+        </div>
+        <figure class="portrait-frame">
+        <img src="assets/images/optimized/groom.jpg" alt="新郎 翁志彤" loading="lazy" decoding="async">
+          <figcaption>GROOM・翁志彤</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="page paper page--portrait page--bride" data-page="5">
+      <span class="page-number">04</span>
+      <span class="arc arc--one" aria-hidden="true"></span>
+      <span class="arc arc--two" aria-hidden="true"></span>
+      <span class="spark spark--a" aria-hidden="true">✦</span>
+      <span class="spark spark--b" aria-hidden="true">✧</span>
+      <div class="portrait-stage">
+        <div class="portrait-caption">
+          <p class="eyebrow">THE BRIDE</p>
+          <span class="portrait-index">02</span>
+          <h2>鄭涵文</h2>
+          <p>謝謝你走進我的生命<br>讓平凡的日子都有了光</p>
+          <small>HAN-WEN CHENG</small>
+        </div>
+        <figure class="portrait-frame">
+        <img src="assets/images/optimized/bride.jpg" alt="新娘 鄭涵文" loading="lazy" decoding="async">
+          <figcaption>BRIDE・鄭涵文</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="page page--story" data-page="6">
+      <span class="page-number light">05</span>
+      <span class="story-spark story-spark--a" aria-hidden="true">✦</span>
+      <span class="story-spark story-spark--b" aria-hidden="true">✧</span>
+      <img class="story-photo" src="assets/images/optimized/photo.jpg" alt="志彤與涵文的婚紗合照" loading="lazy" decoding="async">
+      <div class="story-shade"></div>
+      <div class="story-copy">
+        <p class="eyebrow light">OUR LOVE STORY</p>
+        <h2>世界很大<br>幸好我們遇見了彼此</h2>
+        <p>從今以後，四季、晨昏與每一個平凡日子，<br>都想與你並肩收藏。</p>
+      </div>
+    </section>
+
+    <section class="page paper page--venue decorated-paper" data-page="7">
+      <span class="page-number">06</span>
+      <span class="arc arc--one" aria-hidden="true"></span>
+      <span class="arc arc--two" aria-hidden="true"></span>
+      <span class="spark spark--a" aria-hidden="true">✦</span>
+      <span class="spark spark--b" aria-hidden="true">✧</span>
+      <div class="venue-copy">
+        <p class="eyebrow">THE VENUE</p>
+        <h2>翡麗詩莊園</h2>
+        <p class="hall">2F・天翼廳</p>
+        <span class="rule"></span>
+        <p class="venue-date">2026.09.12 SAT.<br>上午 10:00</p>
+        <address>105 臺北市松山區民有里<br>敦化北路 232 號</address>
+        <a class="primary-link" href="https://maps.app.goo.gl/DVHKzESBfznN1MDa7" target="_blank" rel="noopener">開啟 Google 地圖 <span>↗</span></a>
+      </div>
+      <a class="map-preview" href="https://maps.app.goo.gl/DVHKzESBfznN1MDa7" target="_blank" rel="noopener" aria-label="在 Google 地圖開啟翡麗詩莊園">
+        <iframe title="翡麗詩莊園地圖預覽" src="https://www.google.com/maps?q=105%E8%87%BA%E5%8C%97%E5%B8%82%E6%9D%BE%E5%B1%B1%E5%8D%80%E6%95%A6%E5%8C%96%E5%8C%97%E8%B7%AF232%E8%99%9F&amp;output=embed" loading="lazy" tabindex="-1"></iframe>
+        <span>點擊查看路線 <b>↗</b></span>
+      </a>
+    </section>
+
+    <section class="page paper page--schedule decorated-paper" data-page="8">
+      <span class="page-number">07</span>
+      <span class="arc arc--one" aria-hidden="true"></span>
+      <span class="arc arc--two" aria-hidden="true"></span>
+      <span class="spark spark--a" aria-hidden="true">✦</span>
+      <span class="spark spark--b" aria-hidden="true">✧</span>
+      <div class="schedule-head">
+        <p class="eyebrow">ORDER OF THE DAY</p>
+        <h2>活動流程</h2>
+        <p>每一刻，都期待有你在場</p>
+      </div>
+      <ol class="timeline">
+        <li><time>09:40</time><span><b>證婚賓客入席</b><small>WELCOME &amp; SEATING</small></span></li>
+        <li><time>10:00</time><span><b>證婚開始</b><small>WEDDING CEREMONY</small></span></li>
+        <li><time>11:00</time><span><b>證婚賓客「天翼廳」報到</b><small>GUEST CHECK-IN</small></span></li>
+        <li><time>11:00</time><span><b>Candy Bar Party</b><small>SWEET CELEBRATION</small></span></li>
+        <li><time>11:30</time><span><b>喜宴賓客「天翼廳」報到</b><small>RECEPTION CHECK-IN</small></span></li>
+        <li><time>12:00</time><span><b>喜宴開席</b><small>WEDDING BANQUET</small></span></li>
+        <li><time>14:30</time><span><b>送客合影</b><small>FAREWELL &amp; PHOTOS</small></span></li>
+      </ol>
+    </section>
+
+    <section class="page paper page--gallery" data-page="9">
+      <span class="page-number">08</span>
+      <div class="gallery-title">
+        <p class="eyebrow">MEMORIES IN FRAME</p>
+        <h2>與你，<br>寫成我們的故事</h2>
+        <p>愛不是找到一個完美的人，<br>而是一起看見日常裡的光。</p>
+      </div>
+      <div class="gallery-grid">
+        <figure class="gallery-a"><img src="assets/images/optimized/photo1.jpg" alt="婚紗合照一" loading="lazy" decoding="async"></figure>
+        <figure class="gallery-c"><img src="assets/images/optimized/photo3.jpg" alt="志彤與涵文的全身婚紗合照" loading="lazy" decoding="async"></figure>
+      </div>
+      <p class="gallery-script">To love, laughter, and happily ever after.</p>
+    </section>
+
+    <section class="page page--film" data-page="10">
+      <span class="page-number light">09</span>
+      <div class="film-bg"></div>
+      <div class="film-shade"></div>
+      <div class="film-copy" id="film-copy">
+        <p class="eyebrow light">WEDDING FILM</p>
+        <h2>把這一刻<br>留給未來的我們</h2>
+        <p>按下播放，一起走進我們的故事</p>
+        <button id="play" class="play-button" type="button" aria-controls="player"><span>▶</span> PLAY OUR FILM</button>
+        <small class="play-hint">點擊播放我們的故事</small>
+      </div>
+      <div id="player" class="player" hidden>
+        <button id="close-video" type="button" aria-label="關閉影片">×</button>
+        <video id="video" controls playsinline preload="metadata">
+          <source src="assets/video/wedding.mp4" type="video/mp4">
+          您的瀏覽器不支援影片播放。
+        </video>
       </div>
     </section>
   </main>
 
-  <aside class="pager" aria-label="請柬頁面導覽">
+  <nav class="pager" id="pager" aria-label="喜帖頁面導覽" hidden>
     <button type="button" data-prev aria-label="上一頁">↑</button>
-    <span><b id="page-current">01</b><i></i><em id="page-total">06</em></span>
+    <span><b id="page-current">01</b><i></i><em id="page-total">10</em></span>
     <button type="button" data-next aria-label="下一頁">↓</button>
-  </aside>
-  <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
-  <script src="script.js?v=20260723"></script>
+  </nav>
+  <div class="progress" id="progress" aria-hidden="true" hidden><span id="progress-bar"></span></div>
+
+  <button class="music-control" id="music-control" type="button" aria-label="播放背景音樂" hidden>
+    <span class="music-bars"><i></i><i></i><i></i></span>
+    <em>音樂</em>
+  </button>
+  <!-- 選定音樂後，將檔案放在 assets/audio/music.mp3，並移除下方 hidden 即可啟用 -->
+  <audio id="bgm" loop preload="none" hidden><source src="assets/audio/music.mp3" type="audio/mpeg"></audio>
+
+  <script src="script.js?v=20260726e"></script>
 </body>
 </html>
