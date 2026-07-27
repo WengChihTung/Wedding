@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#eee9df">
   <meta name="description" content="翁志彤與鄭涵文的婚禮邀請｜2026 年 9 月 12 日">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Noto+Serif+TC:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
   <title>志彤 &amp; 涵文｜婚禮邀請</title>
-  <link rel="stylesheet" href="style.css?v=20260727b">
+  <link rel="stylesheet" href="style.css?v=20260727d">
 </head>
 <body>
   <main class="invitation" id="invitation" aria-label="翁志彤與鄭涵文的婚禮邀請">
@@ -17,21 +18,30 @@
       <div class="cover-scene" aria-hidden="true"></div>
       <div class="cover-shade" aria-hidden="true"></div>
       <div class="envelope-wrap">
-        <button class="envelope" id="open-envelope" type="button" aria-label="開啟中式喜帖封套" aria-expanded="false">
+        <button class="envelope" id="open-envelope" type="button" aria-label="開啟西式婚禮信封" aria-expanded="false">
           <span class="envelope-back" aria-hidden="true"></span>
-          <span class="envelope-right" aria-hidden="true"></span>
-          <span class="envelope-left">
-            <small class="cover-kicker">THE WEDDING OF</small>
-            <strong class="cover-title">吾家有喜</strong>
-            <span class="cover-names">
-              <span><small>新郎</small>翁志彤</span>
-              <i></i>
-              <span><small>新娘</small>鄭涵文</span>
-            </span>
-            <time datetime="2026-09-12">二〇二六・九・十二</time>
+          <span class="envelope-card" aria-hidden="true">
+            <small>YOU ARE CORDIALLY INVITED</small>
+            <strong>翁志彤 <i>&amp;</i> 鄭涵文</strong>
+            <time datetime="2026-09-12">SEPTEMBER 12, 2026</time>
           </span>
-          <span class="envelope-seam" aria-hidden="true"></span>
-          <span class="seal" aria-hidden="true">囍</span>
+          <span class="envelope-front" aria-hidden="true"></span>
+          <span class="envelope-flap" aria-hidden="true"></span>
+          <span class="cover-details">
+            <small class="cover-kicker">THE WEDDING OF</small>
+            <strong class="cover-title">Wedding Invitation</strong>
+            <span class="cover-names">
+              <span>翁志彤</span>
+              <i>&amp;</i>
+              <span>鄭涵文</span>
+            </span>
+            <time datetime="2026-09-12">SEPTEMBER 12, 2026</time>
+          </span>
+          <span class="seal" aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+              <path d="M24 34V15M24 24c-5-1-8-4-9-9 5 0 9 3 9 9Zm0 4c5-1 8-4 9-9-5 0-9 3-9 9Zm0 0c-4 0-7 2-9 6m9-1c4 0 7 2 9 6"/>
+            </svg>
+          </span>
         </button>
         <button class="open-hint" id="open-hint" type="button"><span>輕觸開啟喜帖</span><i></i></button>
       </div>
@@ -45,7 +55,13 @@
         <p class="invite-line">誠摯邀請您，見證我們的幸福時刻</p>
         <h1><span>翁志彤</span><i>&amp;</i><span>鄭涵文</span></h1>
         <div class="name-labels"><span>GROOM</span><span>BRIDE</span></div>
-        <div class="monogram">W <i>&amp;</i> C</div>
+        <div class="flourish" aria-hidden="true">
+          <svg viewBox="0 0 180 64" focusable="false">
+            <path d="M90 45C74 45 68 28 53 28c-13 0-18 11-31 11-8 0-14-4-18-10M90 45c16 0 22-17 37-17 13 0 18 11 31 11 8 0 14-4 18-10M90 45V17"/>
+            <path d="M89 30c-9-1-15-7-16-16 9 0 16 6 16 16Zm2 4c9-1 15-7 16-16-9 0-16 6-16 16ZM51 28c-2-8-8-12-16-12 1 8 7 13 16 12Zm78 0c2-8 8-12 16-12-1 8-7 13-16 12Z"/>
+            <circle cx="90" cy="48" r="2.5"/>
+          </svg>
+        </div>
         <p class="invitation-note">從相遇、相知，到決定牽起彼此的手<br>這一天，想與珍愛的你一起分享。</p>
       </div>
       <button class="scroll-cue" type="button" data-next><span>繼續閱讀</span><i>↓</i></button>
@@ -228,6 +244,6 @@
   <!-- 選定音樂後，將檔案放在 assets/audio/music.mp3，並移除下方 hidden 即可啟用 -->
   <audio id="bgm" loop preload="none" hidden><source src="assets/audio/music.mp3" type="audio/mpeg"></audio>
 
-  <script src="script.js?v=20260727b"></script>
+  <script src="script.js?v=20260727d"></script>
 </body>
 </html>
