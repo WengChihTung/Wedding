@@ -173,6 +173,10 @@ button,a{font:inherit}button{color:inherit}
 .play-hint{display:block;margin-top:11px;font-size:.58rem;font-weight:300;letter-spacing:.16em;opacity:.72;animation:hint-fade 1.8s ease-in-out infinite}
 @keyframes play-pulse{0%,100%{transform:translateY(0);box-shadow:0 0 0 0 rgba(255,255,255,.2)}50%{transform:translateY(-6px);box-shadow:0 0 0 8px rgba(255,255,255,0)}}
 @keyframes hint-fade{0%,100%{opacity:.35}50%{opacity:.9}}
+@media(min-width:1600px) and (min-height:950px){
+ .envelope{width:min(840px,calc(50svh * 1.52));transform:translateY(4svh)}
+ .cover-title{font-size:clamp(1.85rem,3.7vw,4rem)}
+}
 @media(max-width:760px){
  .page-number{top:18px;left:18px}.eyebrow{font-size:.61rem}
  .page--invitation{padding:50px 25px}.invite-line{margin-bottom:34px}.invitation-copy h1{gap:12px}.flourish{margin:30px auto 22px}.invitation-note{font-size:.76rem}
