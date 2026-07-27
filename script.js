@@ -16,6 +16,8 @@ let activePage = 0;
 let wheelLocked = false;
 let touchStartY = 0;
 let transitionTimer;
+let envelopeTimer;
+let envelopeOpening = false;
 
 total.textContent = String(pages.length).padStart(2, '0');
 
@@ -31,6 +33,12 @@ function showPage(index) {
   previousPage.classList.remove('is-active');
   if (activePage === pages.length - 1) closeVideo();
   activePage = next;
+  if (activePage === 0) {
+    window.clearTimeout(envelopeTimer);
+    envelopeOpening = false;
+    envelope.classList.remove('open');
+    envelope.setAttribute('aria-expanded', 'false');
+  }
   if (direction < 0) nextPage.classList.add('enter-from-top');
   void nextPage.offsetWidth;
   nextPage.classList.add('is-active');
@@ -45,18 +53,22 @@ function showPage(index) {
 }
 
 function openInvitation() {
+  if (envelopeOpening) return;
   if (envelope.classList.contains('open')) {
     pager.hidden = false;
     progressWrap.hidden = false;
     showPage(1);
     return;
   }
+  envelopeOpening = true;
   envelope.classList.add('open');
-  window.setTimeout(() => {
+  envelope.setAttribute('aria-expanded', 'true');
+  envelopeTimer = window.setTimeout(() => {
+    envelopeOpening = false;
     pager.hidden = false;
     progressWrap.hidden = false;
     showPage(1);
-  }, 1250);
+  }, 1650);
 }
 
 function move(direction) {

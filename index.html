@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Noto+Serif+TC:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
   <title>志彤 &amp; 涵文｜婚禮邀請</title>
-  <link rel="stylesheet" href="style.css?v=20260727a">
+  <link rel="stylesheet" href="style.css?v=20260727b">
 </head>
 <body>
   <main class="invitation" id="invitation" aria-label="翁志彤與鄭涵文的婚禮邀請">
@@ -17,16 +17,20 @@
       <div class="cover-scene" aria-hidden="true"></div>
       <div class="cover-shade" aria-hidden="true"></div>
       <div class="envelope-wrap">
-        <p class="eyebrow light">THE WEDDING OF</p>
-        <button class="envelope" id="open-envelope" type="button" aria-label="打開信封">
-          <span class="envelope-back"></span>
-          <span class="letter">
-            <small>YOU ARE INVITED</small>
-            <b>志彤 <i>&amp;</i> 涵文</b>
-            <em>2026.09.12</em>
+        <button class="envelope" id="open-envelope" type="button" aria-label="開啟中式喜帖封套" aria-expanded="false">
+          <span class="envelope-back" aria-hidden="true"></span>
+          <span class="envelope-right" aria-hidden="true"></span>
+          <span class="envelope-left">
+            <small class="cover-kicker">THE WEDDING OF</small>
+            <strong class="cover-title">吾家有喜</strong>
+            <span class="cover-names">
+              <span><small>新郎</small>翁志彤</span>
+              <i></i>
+              <span><small>新娘</small>鄭涵文</span>
+            </span>
+            <time datetime="2026-09-12">二〇二六・九・十二</time>
           </span>
-          <span class="envelope-front"></span>
-          <span class="envelope-flap"></span>
+          <span class="envelope-seam" aria-hidden="true"></span>
           <span class="seal" aria-hidden="true">囍</span>
         </button>
         <button class="open-hint" id="open-hint" type="button"><span>輕觸開啟喜帖</span><i></i></button>
@@ -224,6 +228,6 @@
   <!-- 選定音樂後，將檔案放在 assets/audio/music.mp3，並移除下方 hidden 即可啟用 -->
   <audio id="bgm" loop preload="none" hidden><source src="assets/audio/music.mp3" type="audio/mpeg"></audio>
 
-  <script src="script.js?v=20260727a"></script>
+  <script src="script.js?v=20260727b"></script>
 </body>
 </html>
