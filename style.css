@@ -1,7 +1,8 @@
-:root{--ink:#3d3530;--paper:#f7f1ea;--paper-deep:#e7ded6;--sage:#6f746c;--rose:#d8b9ad;--gold:#b99b86;--line:rgba(61,53,48,.28)}
-*{box-sizing:border-box}
+@font-face{font-family:"ChenYuluoyan";src:url("assets/fonts/ChenYuluoyan-2.0-Thin.woff2") format("woff2");font-display:swap;font-style:normal;font-weight:400}
+:root{--ink:#3d3530;--paper:#f7f1ea;--paper-deep:#e7ded6;--sage:#6f746c;--rose:#d8b9ad;--gold:#b99b86;--line:rgba(61,53,48,.28);--font:"ChenYuluoyan",cursive}
+*,*:before,*:after{box-sizing:border-box;font-family:var(--font)!important}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
-body{color:var(--ink);background:#e7ded6;font-family:"Noto Serif TC",serif}
+body{color:var(--ink);background:#e7ded6;font-family:var(--font)}
 button,a{font:inherit}button{color:inherit}
 .invitation{position:relative;height:100%;height:100svh}
 .page{position:absolute;inset:0;overflow:hidden;opacity:0;visibility:hidden;transform:translate3d(0,42px,0) scale(.995);transition:opacity .78s ease,transform .9s cubic-bezier(.22,.61,.36,1),visibility 0s linear .9s;will-change:opacity,transform;backface-visibility:hidden}
