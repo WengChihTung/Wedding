@@ -15,7 +15,7 @@ button,a{font:inherit}button{color:inherit}
 .page--venue{background-color:#f7f1ea}
 .page--schedule{background-color:#e4d4c8}
 .page--gallery{background-color:#f3ede5}
-.page--dress{background-color:#fbf8ef}
+.page--dress{background-color:#f4ece3}
 .page-number{position:absolute;z-index:6;top:28px;left:32px;font:500 .68rem "Cormorant Garamond";letter-spacing:.25em;opacity:.55}.page-number.light{color:#fff}
 .eyebrow{margin:0 0 19px;font:500 .68rem/1.2 "Cormorant Garamond";letter-spacing:.36em}.eyebrow.light{color:#fff}
 .cover-scene{position:absolute;inset:-2%;background:url("assets/images/cover.jpg") center/cover no-repeat;transform:scale(1.025);filter:grayscale(.4) saturate(.45) contrast(.9);transition:transform 10s ease-out;will-change:transform}
@@ -156,7 +156,7 @@ button,a{font:inherit}button{color:inherit}
 
 /* Every information page retains a subtle sign of life. */
 .page:not(.page--cover):not(.page--film):not(.page--invitation)::after{content:"⌄";position:absolute;z-index:8;left:50%;bottom:17px;color:#fff;mix-blend-mode:difference;font:300 1.25rem "Cormorant Garamond";animation:page-breathe 1.7s ease-in-out infinite;pointer-events:none}
-.page--gallery::after{display:none}
+.page--dress::after{display:none}
 @keyframes page-breathe{0%,100%{opacity:.25;transform:translate(-50%,0)}50%{opacity:.9;transform:translate(-50%,7px)}}
 .is-active .arc--one{animation:arc-float-one 8s 1.4s ease-in-out infinite}
 .is-active .arc--two{animation:arc-float-two 9s 1.8s ease-in-out infinite}
