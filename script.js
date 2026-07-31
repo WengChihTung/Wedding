@@ -1,4 +1,5 @@
-const pages = [...document.querySelectorAll('.page')];
+const pages = [...document.querySelectorAll('.page')]
+  .sort((a, b) => Number(a.dataset.page) - Number(b.dataset.page));
 const current = document.getElementById('page-current');
 const total = document.getElementById('page-total');
 const progress = document.getElementById('progress-bar');
@@ -31,7 +32,7 @@ function showPage(index) {
   pages.forEach(page => page.classList.remove('is-leaving-up', 'is-leaving-down', 'enter-from-top'));
   previousPage.classList.add(direction > 0 ? 'is-leaving-up' : 'is-leaving-down');
   previousPage.classList.remove('is-active');
-  if (activePage === pages.length - 1) closeVideo();
+  if (previousPage.classList.contains('page--film')) closeVideo();
   activePage = next;
   if (activePage === 0) {
     window.clearTimeout(envelopeTimer);
