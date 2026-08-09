@@ -183,33 +183,33 @@ button,a{font:inherit}button{color:inherit}
  .cover-title{font-size:clamp(1.85rem,3.7vw,4rem)}
 }
 @media(min-width:761px){
- .page-number{font-size:clamp(.9rem,.85vw,1rem)}
- .eyebrow{font-size:clamp(1rem,.9vw,1.05rem)}
- .envelope-card small,.envelope-card time,.cover-kicker,.cover-details time{font-size:clamp(1rem,.9vw,1.05rem)}
- .open-hint{font-size:clamp(1rem,.9vw,1.05rem)}
- .invite-line,.invitation-note{font-size:clamp(1.05rem,1.05vw,1.2rem)}
- .name-labels{font-size:clamp(1rem,.9vw,1.05rem)}
- .scroll-cue{font-size:clamp(.95rem,.9vw,1.05rem)}
- .weekdays{font-size:clamp(.95rem,.85vw,1rem)}
- .dates{font-size:clamp(1rem,1vw,1.15rem)}
- .date-written{font-size:clamp(1rem,1vw,1.15rem)}
- .countdown span{font-size:clamp(.95rem,.85vw,1rem)}
- .portrait-caption>p:not(.eyebrow){font-size:clamp(1.05rem,1.05vw,1.2rem)}
- .portrait-caption small{font-size:clamp(1rem,.9vw,1.05rem)}
- .portrait-frame figcaption{font-size:clamp(1rem,1vw,1.15rem)}
- .hall{font-size:clamp(1.15rem,1.15vw,1.3rem)}
- .venue-date{font-size:clamp(1.15rem,1.15vw,1.3rem)}
- .venue-copy address{font-size:clamp(1.05rem,1.05vw,1.2rem)}
- .primary-link{font-size:clamp(.95rem,1vw,1.1rem)}
- .map-preview>span{font-size:clamp(1rem,.9vw,1.05rem)}
- .schedule-head>p:last-child{font-size:clamp(1rem,1vw,1.15rem)}
- .timeline time{font-size:clamp(1.25rem,1.25vw,1.45rem)}
- .timeline b{font-size:clamp(1.05rem,1.05vw,1.2rem)}
- .timeline small{font-size:clamp(1rem,.9vw,1.05rem)}
- .film-copy>p:not(.eyebrow){font-size:clamp(1rem,1vw,1.15rem)}
- .play-button{font-size:clamp(1rem,.9vw,1.05rem)}
- .play-hint{font-size:clamp(.95rem,.9vw,1.05rem)}
- .pager span{font-size:clamp(.9rem,.85vw,1rem)}
+ .page-number{font-size:clamp(.98rem,.9vw,1.1rem)}
+ .eyebrow{font-size:clamp(1.12rem,1vw,1.2rem)}
+ .envelope-card small,.envelope-card time,.cover-kicker,.cover-details time{font-size:clamp(1.12rem,1vw,1.2rem)}
+ .open-hint{font-size:clamp(1.12rem,1vw,1.2rem)}
+ .invite-line,.invitation-note{font-size:clamp(1.2rem,1.15vw,1.35rem)}
+ .name-labels{font-size:clamp(1.12rem,1vw,1.2rem)}
+ .scroll-cue{font-size:clamp(1.05rem,.95vw,1.15rem)}
+ .weekdays{font-size:clamp(1.05rem,.95vw,1.15rem)}
+ .dates{font-size:clamp(1.125rem,1.05vw,1.3rem)}
+ .date-written{font-size:clamp(1.125rem,1.05vw,1.3rem)}
+ .countdown span{font-size:clamp(1.05rem,.95vw,1.15rem)}
+ .portrait-caption>p:not(.eyebrow){font-size:clamp(1.2rem,1.15vw,1.35rem)}
+ .portrait-caption small{font-size:clamp(1.12rem,1vw,1.2rem)}
+ .portrait-frame figcaption{font-size:clamp(1.125rem,1.05vw,1.3rem)}
+ .hall{font-size:clamp(1.3rem,1.25vw,1.45rem)}
+ .venue-date{font-size:clamp(1.3rem,1.25vw,1.45rem)}
+ .venue-copy address{font-size:clamp(1.2rem,1.15vw,1.35rem)}
+ .primary-link{font-size:clamp(1.1rem,1.05vw,1.25rem)}
+ .map-preview>span{font-size:clamp(1.1rem,1vw,1.2rem)}
+ .schedule-head>p:last-child{font-size:clamp(1.125rem,1.05vw,1.3rem)}
+ .timeline time{font-size:clamp(1.4rem,1.35vw,1.6rem)}
+ .timeline b{font-size:clamp(1.2rem,1.15vw,1.35rem)}
+ .timeline small{font-size:clamp(1.1rem,1vw,1.2rem)}
+ .film-copy>p:not(.eyebrow){font-size:clamp(1.125rem,1.05vw,1.3rem)}
+ .play-button{font-size:clamp(1.1rem,1vw,1.2rem)}
+ .play-hint{font-size:clamp(1.05rem,.95vw,1.15rem)}
+ .pager span{font-size:clamp(1rem,.9vw,1.1rem)}
 }
 @media(max-width:760px){
  .page-number{top:18px;left:18px}.eyebrow{font-size:.88rem}
