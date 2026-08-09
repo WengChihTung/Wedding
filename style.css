@@ -182,6 +182,35 @@ button,a{font:inherit}button{color:inherit}
  .envelope{width:min(840px,calc(50svh * 1.52));transform:translateY(4svh)}
  .cover-title{font-size:clamp(1.85rem,3.7vw,4rem)}
 }
+@media(min-width:761px){
+ .page-number{font-size:clamp(.9rem,.85vw,1rem)}
+ .eyebrow{font-size:clamp(1rem,.9vw,1.05rem)}
+ .envelope-card small,.envelope-card time,.cover-kicker,.cover-details time{font-size:clamp(1rem,.9vw,1.05rem)}
+ .open-hint{font-size:clamp(1rem,.9vw,1.05rem)}
+ .invite-line,.invitation-note{font-size:clamp(1.05rem,1.05vw,1.2rem)}
+ .name-labels{font-size:clamp(1rem,.9vw,1.05rem)}
+ .scroll-cue{font-size:clamp(.95rem,.9vw,1.05rem)}
+ .weekdays{font-size:clamp(.95rem,.85vw,1rem)}
+ .dates{font-size:clamp(1rem,1vw,1.15rem)}
+ .date-written{font-size:clamp(1rem,1vw,1.15rem)}
+ .countdown span{font-size:clamp(.95rem,.85vw,1rem)}
+ .portrait-caption>p:not(.eyebrow){font-size:clamp(1.05rem,1.05vw,1.2rem)}
+ .portrait-caption small{font-size:clamp(1rem,.9vw,1.05rem)}
+ .portrait-frame figcaption{font-size:clamp(1rem,1vw,1.15rem)}
+ .hall{font-size:clamp(1.15rem,1.15vw,1.3rem)}
+ .venue-date{font-size:clamp(1.15rem,1.15vw,1.3rem)}
+ .venue-copy address{font-size:clamp(1.05rem,1.05vw,1.2rem)}
+ .primary-link{font-size:clamp(.95rem,1vw,1.1rem)}
+ .map-preview>span{font-size:clamp(1rem,.9vw,1.05rem)}
+ .schedule-head>p:last-child{font-size:clamp(1rem,1vw,1.15rem)}
+ .timeline time{font-size:clamp(1.25rem,1.25vw,1.45rem)}
+ .timeline b{font-size:clamp(1.05rem,1.05vw,1.2rem)}
+ .timeline small{font-size:clamp(1rem,.9vw,1.05rem)}
+ .film-copy>p:not(.eyebrow){font-size:clamp(1rem,1vw,1.15rem)}
+ .play-button{font-size:clamp(1rem,.9vw,1.05rem)}
+ .play-hint{font-size:clamp(.95rem,.9vw,1.05rem)}
+ .pager span{font-size:clamp(.9rem,.85vw,1rem)}
+}
 @media(max-width:760px){
  .page-number{top:18px;left:18px}.eyebrow{font-size:.88rem}
  .page--invitation{padding:46px 22px}.invitation-copy{width:100%}.invite-line{margin-bottom:26px;font-size:1.14rem}.invitation-copy h1{width:100%;display:grid;grid-template-columns:1fr auto 1fr;justify-content:stretch;gap:12px}.invitation-copy h1 span:first-child{text-align:right}.invitation-copy h1 span:last-child{text-align:left}.name-labels{display:grid;grid-template-columns:1fr 1fr;margin-left:0;margin-right:0;font-size:.86rem}.name-labels span{text-align:center}.flourish{margin:23px auto 17px}.invitation-note{font-size:1.04rem;line-height:1.8}.scroll-cue{font-size:.92rem}
