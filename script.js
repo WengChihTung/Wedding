@@ -19,6 +19,111 @@ let touchStartY = 0;
 let transitionTimer;
 let envelopeTimer;
 let envelopeOpening = false;
+let activeImageLoads = 0;
+const imageQueue = [];
+const queuedImages = new WeakSet();
+
+const sleep = delay => new Promise(resolve => window.setTimeout(resolve, delay));
+
+function markImageReady(image) {
+  image.classList.add('is-loaded');
+}
+
+function prepareImage(image, priority = 'low') {
+  if (!image) return Promise.resolve();
+  image.loading = 'eager';
+  image.fetchPriority = priority;
+  const decodeAndReveal = () => {
+    const decoded = image.decode ? image.decode().catch(() => {}) : Promise.resolve();
+    return decoded.then(() => markImageReady(image));
+  };
+  if (image.complete) {
+    return decodeAndReveal();
+  }
+  return new Promise(resolve => {
+    const finish = async () => {
+      await decodeAndReveal();
+      resolve();
+    };
+    const fail = () => {
+      markImageReady(image);
+      resolve();
+    };
+    image.addEventListener('load', finish, { once: true });
+    image.addEventListener('error', fail, { once: true });
+  });
+}
+
+function runImageQueue() {
+  imageQueue.sort((a, b) => (a.priority === 'high' ? -1 : 1) - (b.priority === 'high' ? -1 : 1));
+  while (activeImageLoads < 2 && imageQueue.length) {
+    const { image, priority } = imageQueue.shift();
+    activeImageLoads += 1;
+    prepareImage(image, priority).finally(() => {
+      activeImageLoads -= 1;
+      runImageQueue();
+    });
+  }
+}
+
+function queueImage(image, priority) {
+  if (queuedImages.has(image)) {
+    const queued = imageQueue.find(item => item.image === image);
+    if (queued && priority === 'high') queued.priority = 'high';
+    runImageQueue();
+    return;
+  }
+  queuedImages.add(image);
+  imageQueue.push({ image, priority });
+  runImageQueue();
+}
+
+function warmNearbyPages(index) {
+  pages.slice(index, index + 3).forEach((page, pageOffset) => {
+    page.querySelectorAll('img[loading]').forEach(image => {
+      queueImage(image, pageOffset === 0 ? 'high' : 'low');
+    });
+  });
+}
+
+function preloadCover() {
+  return new Promise(resolve => {
+    const cover = new Image();
+    const finish = async () => {
+      if (cover.decode) await cover.decode().catch(() => {});
+      resolve();
+    };
+    cover.onload = finish;
+    cover.onerror = resolve;
+    cover.src = 'assets/images/optimized/cover.jpg';
+    if (cover.complete) finish();
+  });
+}
+
+async function revealInvitation() {
+  const fontReady = document.fonts
+    ? document.fonts.load('1em "ChenYuluoyan"').catch(() => {})
+    : Promise.resolve();
+  await Promise.race([
+    Promise.all([fontReady, preloadCover(), sleep(420)]),
+    sleep(5500)
+  ]);
+  document.documentElement.classList.remove('is-loading');
+  document.getElementById('site-loader').setAttribute('aria-hidden', 'true');
+  warmNearbyPages(0);
+}
+
+document.querySelectorAll('img[loading]').forEach(image => {
+  const revealAfterDecode = async () => {
+    if (image.decode) await image.decode().catch(() => {});
+    markImageReady(image);
+  };
+  if (image.complete) revealAfterDecode();
+  image.addEventListener('load', revealAfterDecode, { once: true });
+  image.addEventListener('error', () => markImageReady(image), { once: true });
+});
+
+revealInvitation();
 
 total.textContent = String(pages.length).padStart(2, '0');
 
@@ -48,6 +153,7 @@ function showPage(index) {
   progress.style.width = `${((activePage + 1) / pages.length) * 100}%`;
   pagerPrevious.disabled = activePage === 0;
   pagerNext.disabled = activePage === pages.length - 1;
+  warmNearbyPages(activePage);
   transitionTimer = window.setTimeout(() => {
     previousPage.classList.remove('is-leaving-up', 'is-leaving-down');
   }, 920);
@@ -145,13 +251,4 @@ musicControl.addEventListener('click', () => {
     bgm.pause();
     musicControl.classList.remove('playing');
   }
-});
-
-window.addEventListener('load', () => {
-  window.setTimeout(() => {
-    document.querySelectorAll('img[loading="lazy"]').forEach(image => {
-      image.loading = 'eager';
-      if (image.decode) image.decode().catch(() => {});
-    });
-  }, 900);
 });
