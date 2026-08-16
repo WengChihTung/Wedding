@@ -9,14 +9,17 @@ const envelope = document.getElementById('open-envelope');
 const video = document.getElementById('video');
 const player = document.getElementById('player');
 const filmCopy = document.getElementById('film-copy');
+const videoStatus = document.getElementById('video-status');
+const videoStatusText = document.getElementById('video-status-text');
+const retryVideo = document.getElementById('retry-video');
 const bgm = document.getElementById('bgm');
 const musicControl = document.getElementById('music-control');
 const pagerPrevious = pager.querySelector('[data-prev]');
 const pagerNext = pager.querySelector('[data-next]');
 const PAGE_TRANSITION_MS = 920;
 const ENVELOPE_OPEN_MS = 1650;
-const WHEEL_GESTURE_END_MS = 220;
-const WHEEL_TRIGGER_DISTANCE = 48;
+const WHEEL_GESTURE_END_MS = 140;
+const WHEEL_TRIGGER_DISTANCE = 32;
 const contentPageCount = pages.length - 1;
 let activePage = 0;
 let navigationLockedUntil = 0;
@@ -230,21 +233,16 @@ window.addEventListener('wheel', event => {
   window.clearTimeout(wheelGestureTimer);
   wheelGestureTimer = window.setTimeout(resetWheelGesture, WHEEL_GESTURE_END_MS);
   if (player.hidden === false) return;
-  if (isNavigationLocked()) {
-    wheelGestureConsumed = true;
-    wheelDeltaY = 0;
-    return;
-  }
+  if (isNavigationLocked()) return;
   if (wheelGestureConsumed) return;
-  const deltaScale = event.deltaMode === WheelEvent.DOM_DELTA_LINE
+  const deltaScale = event.deltaMode === 1
     ? 16
-    : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? window.innerHeight : 1;
+    : event.deltaMode === 2 ? window.innerHeight : 1;
   wheelDeltaY += event.deltaY * deltaScale;
   if (Math.abs(wheelDeltaY) < WHEEL_TRIGGER_DISTANCE) return;
-  wheelGestureConsumed = true;
   const direction = wheelDeltaY > 0 ? 1 : -1;
   wheelDeltaY = 0;
-  move(direction);
+  wheelGestureConsumed = move(direction) === true;
 }, { passive: false });
 
 window.addEventListener('keydown', event => {
@@ -308,10 +306,25 @@ function closeVideo() {
   const shouldResumeMusic = resumeMusicAfterVideo;
   resumeMusicAfterVideo = false;
   video.pause();
+  setVideoStatus('');
   player.hidden = true;
   filmCopy.hidden = false;
   musicControl.disabled = false;
   if (shouldResumeMusic) playBackgroundMusic();
+}
+
+function setVideoStatus(message, canRetry = false) {
+  videoStatusText.textContent = message;
+  videoStatus.hidden = message === '';
+  retryVideo.hidden = !canRetry;
+}
+
+function requestVideoPlayback({ reload = false } = {}) {
+  if (reload || video.readyState === 0) video.load();
+  setVideoStatus('影片載入中…');
+  return video.play().catch(() => {
+    if (player.hidden === false) setVideoStatus('影片暫時無法播放', true);
+  });
 }
 
 document.getElementById('play').addEventListener('click', () => {
@@ -321,9 +334,21 @@ document.getElementById('play').addEventListener('click', () => {
   musicControl.disabled = true;
   filmCopy.hidden = true;
   player.hidden = false;
-  video.play().catch(closeVideo);
+  requestVideoPlayback();
 });
 document.getElementById('close-video').addEventListener('click', closeVideo);
+retryVideo.addEventListener('click', () => requestVideoPlayback({ reload: true }));
+video.addEventListener('canplay', () => setVideoStatus(''));
+video.addEventListener('playing', () => setVideoStatus(''));
+video.addEventListener('waiting', () => {
+  if (player.hidden === false) setVideoStatus('影片載入中…');
+});
+video.addEventListener('stalled', () => {
+  if (player.hidden === false) setVideoStatus('網路較慢，影片仍在載入…');
+});
+video.addEventListener('error', () => {
+  if (player.hidden === false) setVideoStatus('影片載入失敗', true);
+});
 video.addEventListener('ended', closeVideo);
 
 function updateMusicControl(isPlaying) {
