@@ -18,18 +18,18 @@ const pagerPrevious = pager.querySelector('[data-prev]');
 const pagerNext = pager.querySelector('[data-next]');
 const PAGE_TRANSITION_MS = 920;
 const ENVELOPE_OPEN_MS = 1650;
-const WHEEL_GESTURE_END_MS = 140;
-const WHEEL_TRIGGER_DISTANCE = 32;
+const WHEEL_IDLE_RESET_MS = 180;
+const WHEEL_TRIGGER_DISTANCE = 24;
+const WHEEL_COOLDOWN_MS = PAGE_TRANSITION_MS + 120;
 const contentPageCount = pages.length - 1;
 let activePage = 0;
 let navigationLockedUntil = 0;
-let wheelGestureConsumed = false;
 let wheelDeltaY = 0;
 let lastWheelAt = 0;
+let wheelCooldownUntil = 0;
 let touchTracking = false;
 let touchStartY = 0;
 let transitionTimer;
-let wheelGestureTimer;
 let envelopeTimer;
 let envelopeOpening = false;
 let activeImageLoads = 0;
@@ -220,30 +220,30 @@ document.getElementById('open-hint').addEventListener('click', openInvitation);
 document.querySelectorAll('[data-next]').forEach(button => button.addEventListener('click', () => move(1)));
 document.querySelectorAll('[data-prev]').forEach(button => button.addEventListener('click', () => move(-1)));
 
-function resetWheelGesture() {
-  wheelGestureConsumed = false;
-  wheelDeltaY = 0;
-}
-
-window.addEventListener('wheel', event => {
-  event.preventDefault();
-  const now = performance.now();
-  if (now - lastWheelAt > WHEEL_GESTURE_END_MS) resetWheelGesture();
-  lastWheelAt = now;
-  window.clearTimeout(wheelGestureTimer);
-  wheelGestureTimer = window.setTimeout(resetWheelGesture, WHEEL_GESTURE_END_MS);
+function handleWheelNavigation(event) {
+  if (event.cancelable) event.preventDefault();
   if (player.hidden === false) return;
-  if (isNavigationLocked()) return;
-  if (wheelGestureConsumed) return;
+  const now = performance.now();
+  if (now - lastWheelAt > WHEEL_IDLE_RESET_MS) wheelDeltaY = 0;
+  lastWheelAt = now;
+  if (now < wheelCooldownUntil || isNavigationLocked()) return;
   const deltaScale = event.deltaMode === 1
     ? 16
     : event.deltaMode === 2 ? window.innerHeight : 1;
-  wheelDeltaY += event.deltaY * deltaScale;
+  const rawDeltaY = Number.isFinite(event.deltaY) && event.deltaY !== 0
+    ? event.deltaY * deltaScale
+    : -(event.wheelDelta || 0);
+  if (rawDeltaY === 0) return;
+  if (wheelDeltaY !== 0 && Math.sign(rawDeltaY) !== Math.sign(wheelDeltaY)) wheelDeltaY = 0;
+  wheelDeltaY += rawDeltaY;
   if (Math.abs(wheelDeltaY) < WHEEL_TRIGGER_DISTANCE) return;
   const direction = wheelDeltaY > 0 ? 1 : -1;
   wheelDeltaY = 0;
-  wheelGestureConsumed = move(direction) === true;
-}, { passive: false });
+  if (move(direction) === true) wheelCooldownUntil = now + WHEEL_COOLDOWN_MS;
+}
+
+document.addEventListener('wheel', handleWheelNavigation, { passive: false, capture: true });
+document.addEventListener('mousewheel', handleWheelNavigation, { passive: false, capture: true });
 
 window.addEventListener('keydown', event => {
   if (event.key === 'Escape' && player.hidden === false) {
