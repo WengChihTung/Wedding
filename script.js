@@ -16,17 +16,19 @@ const bgm = document.getElementById('bgm');
 const musicControl = document.getElementById('music-control');
 const pagerPrevious = pager.querySelector('[data-prev]');
 const pagerNext = pager.querySelector('[data-next]');
+const groomImage = pages.find(page => page.dataset.page === '3')?.querySelector('img');
 const PAGE_TRANSITION_MS = 920;
 const ENVELOPE_OPEN_MS = 1650;
-const WHEEL_IDLE_RESET_MS = 180;
-const WHEEL_TRIGGER_DISTANCE = 24;
-const WHEEL_COOLDOWN_MS = PAGE_TRANSITION_MS + 120;
+const WHEEL_IDLE_RESET_MS = 220;
+const WHEEL_TRIGGER_DISTANCE = 20;
 const contentPageCount = pages.length - 1;
 let activePage = 0;
 let navigationLockedUntil = 0;
 let wheelDeltaY = 0;
 let lastWheelAt = 0;
-let wheelCooldownUntil = 0;
+let wheelGestureHandled = false;
+let pendingWheelDirection = 0;
+let pendingWheelTimer;
 let touchTracking = false;
 let touchStartY = 0;
 let transitionTimer;
@@ -36,6 +38,7 @@ let activeImageLoads = 0;
 let musicStartedOnce = false;
 let musicStartPromise = null;
 let resumeMusicAfterVideo = false;
+let videoWarmStage = 0;
 const imageQueue = [];
 const queuedImages = new WeakSet();
 
@@ -120,8 +123,10 @@ async function revealInvitation() {
   const fontReady = document.fonts
     ? document.fonts.load('1em "ChenYuluoyan"').catch(() => {})
     : Promise.resolve();
+  if (groomImage) queuedImages.add(groomImage);
+  const groomReady = prepareImage(groomImage, 'high');
   await Promise.race([
-    Promise.all([fontReady, preloadCover(), sleep(420)]),
+    Promise.all([fontReady, preloadCover(), groomReady, sleep(420)]),
     sleep(5500)
   ]);
   document.documentElement.classList.remove('is-loading');
@@ -182,6 +187,7 @@ function showPage(index, { ignoreLock = false } = {}) {
   pagerPrevious.disabled = activePage === 0;
   pagerNext.disabled = activePage === pages.length - 1;
   warmNearbyPages(activePage);
+  if (activePage >= 4) scheduleVideoWarmup(nextPage);
   transitionTimer = window.setTimeout(() => {
     previousPage.classList.remove('is-leaving-up', 'is-leaving-down');
   }, PAGE_TRANSITION_MS);
@@ -194,6 +200,7 @@ function openInvitation() {
   if (envelope.classList.contains('open')) {
     pager.hidden = false;
     progressWrap.hidden = false;
+    warmVideo(1);
     return showPage(1);
   }
   envelopeOpening = true;
@@ -204,6 +211,7 @@ function openInvitation() {
     envelopeOpening = false;
     pager.hidden = false;
     progressWrap.hidden = false;
+    warmVideo(1);
     showPage(1, { ignoreLock: true });
   }, ENVELOPE_OPEN_MS);
   return true;
@@ -215,18 +223,50 @@ function move(direction) {
   return showPage(activePage + direction);
 }
 
-envelope.addEventListener('click', openInvitation);
-document.getElementById('open-hint').addEventListener('click', openInvitation);
-document.querySelectorAll('[data-next]').forEach(button => button.addEventListener('click', () => move(1)));
-document.querySelectorAll('[data-prev]').forEach(button => button.addEventListener('click', () => move(-1)));
+function cancelPendingWheelNavigation() {
+  pendingWheelDirection = 0;
+  window.clearTimeout(pendingWheelTimer);
+}
+
+function schedulePendingWheelNavigation() {
+  window.clearTimeout(pendingWheelTimer);
+  if (pendingWheelDirection === 0) return;
+  const delay = Math.max(navigationLockedUntil - performance.now(), 0) + 24;
+  pendingWheelTimer = window.setTimeout(() => {
+    if (isNavigationLocked()) {
+      schedulePendingWheelNavigation();
+      return;
+    }
+    const direction = pendingWheelDirection;
+    pendingWheelDirection = 0;
+    move(direction);
+  }, delay);
+}
+
+function moveFromControl(direction) {
+  cancelPendingWheelNavigation();
+  return move(direction);
+}
+
+function openInvitationFromControl() {
+  cancelPendingWheelNavigation();
+  return openInvitation();
+}
+
+envelope.addEventListener('click', openInvitationFromControl);
+document.getElementById('open-hint').addEventListener('click', openInvitationFromControl);
+document.querySelectorAll('[data-next]').forEach(button => button.addEventListener('click', () => moveFromControl(1)));
+document.querySelectorAll('[data-prev]').forEach(button => button.addEventListener('click', () => moveFromControl(-1)));
 
 function handleWheelNavigation(event) {
   if (event.cancelable) event.preventDefault();
   if (player.hidden === false) return;
   const now = performance.now();
-  if (now - lastWheelAt > WHEEL_IDLE_RESET_MS) wheelDeltaY = 0;
+  if (now - lastWheelAt > WHEEL_IDLE_RESET_MS) {
+    wheelDeltaY = 0;
+    wheelGestureHandled = false;
+  }
   lastWheelAt = now;
-  if (now < wheelCooldownUntil || isNavigationLocked()) return;
   const deltaScale = event.deltaMode === 1
     ? 16
     : event.deltaMode === 2 ? window.innerHeight : 1;
@@ -234,16 +274,24 @@ function handleWheelNavigation(event) {
     ? event.deltaY * deltaScale
     : -(event.wheelDelta || 0);
   if (rawDeltaY === 0) return;
+  if (wheelGestureHandled) return;
   if (wheelDeltaY !== 0 && Math.sign(rawDeltaY) !== Math.sign(wheelDeltaY)) wheelDeltaY = 0;
   wheelDeltaY += rawDeltaY;
   if (Math.abs(wheelDeltaY) < WHEEL_TRIGGER_DISTANCE) return;
   const direction = wheelDeltaY > 0 ? 1 : -1;
   wheelDeltaY = 0;
-  if (move(direction) === true) wheelCooldownUntil = now + WHEEL_COOLDOWN_MS;
+  if (isNavigationLocked()) {
+    wheelGestureHandled = true;
+    pendingWheelDirection = direction;
+    schedulePendingWheelNavigation();
+    return;
+  }
+  cancelPendingWheelNavigation();
+  wheelGestureHandled = move(direction) === true;
 }
 
-document.addEventListener('wheel', handleWheelNavigation, { passive: false, capture: true });
-document.addEventListener('mousewheel', handleWheelNavigation, { passive: false, capture: true });
+window.addEventListener('wheel', handleWheelNavigation, { passive: false, capture: true });
+window.addEventListener('mousewheel', handleWheelNavigation, { passive: false, capture: true });
 
 window.addEventListener('keydown', event => {
   if (event.key === 'Escape' && player.hidden === false) {
@@ -257,11 +305,11 @@ window.addEventListener('keydown', event => {
   if (isInteractive || event.repeat) return;
   if (['ArrowDown', 'PageDown', ' '].includes(event.key)) {
     event.preventDefault();
-    move(1);
+    moveFromControl(1);
   }
   if (['ArrowUp', 'PageUp'].includes(event.key)) {
     event.preventDefault();
-    move(-1);
+    moveFromControl(-1);
   }
 });
 
@@ -279,7 +327,7 @@ window.addEventListener('touchend', event => {
   const distance = touchStartY - event.changedTouches[0].screenY;
   if (Math.abs(distance) > 48) {
     if (activePage === 0 && distance > 0 && !musicStartedOnce) playBackgroundMusic();
-    move(distance > 0 ? 1 : -1);
+    moveFromControl(distance > 0 ? 1 : -1);
   }
 }, { passive: true });
 window.addEventListener('touchcancel', () => {
@@ -319,7 +367,28 @@ function setVideoStatus(message, canRetry = false) {
   retryVideo.hidden = !canRetry;
 }
 
+function warmVideo(stage) {
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const shouldLimitPreload = connection?.saveData || ['slow-2g', '2g'].includes(connection?.effectiveType);
+  const nextStage = stage > 1 && !shouldLimitPreload ? 2 : 1;
+  if (videoWarmStage >= nextStage) return;
+  videoWarmStage = nextStage;
+  video.preload = nextStage === 2 ? 'auto' : 'metadata';
+  video.load();
+}
+
+function scheduleVideoWarmup(page) {
+  if (videoWarmStage >= 2) return;
+  const pageImages = [...page.querySelectorAll('img[loading]')];
+  const currentImagesReady = Promise.all(pageImages.map(image => prepareImage(image, 'high')));
+  Promise.race([currentImagesReady, sleep(1400)]).then(() => {
+    if (activePage >= 4) warmVideo(2);
+  });
+}
+
 function requestVideoPlayback({ reload = false } = {}) {
+  video.preload = 'auto';
+  videoWarmStage = 2;
   if (reload || video.readyState === 0) video.load();
   setVideoStatus('影片載入中…');
   return video.play().catch(() => {

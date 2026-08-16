@@ -8,8 +8,9 @@
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/ChenYuluoyan-2.0-Thin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/images/optimized/cover.jpg" as="image" fetchpriority="high">
+  <link rel="preload" href="assets/images/optimized/groom-1400.jpg" as="image" imagesrcset="assets/images/optimized/groom-1400.jpg 933w, assets/images/optimized/groom.jpg 1600w" imagesizes="(max-width: 760px) 78vw, 55vw" fetchpriority="high">
   <title>志彤 &amp; 涵文｜婚禮邀請</title>
-  <link rel="stylesheet" href="style.css?v=20260816e">
+  <link rel="stylesheet" href="style.css?v=20260816f">
   <script>window.setTimeout(function(){document.documentElement.classList.remove('is-loading')},7000)</script>
   <noscript><style>html.is-loading .invitation{opacity:1;visibility:visible}html.is-loading .site-loader{display:none}</style></noscript>
 </head>
@@ -119,7 +120,7 @@
           <small>CHIH-TUNG WENG</small>
         </div>
         <figure class="portrait-frame">
-        <img src="assets/images/optimized/groom-1400.jpg" srcset="assets/images/optimized/groom-1400.jpg 933w, assets/images/optimized/groom.jpg 1600w" sizes="(max-width: 760px) 78vw, 55vw" width="1600" height="2400" alt="新郎 翁志彤" loading="lazy" decoding="async" fetchpriority="low">
+        <img src="assets/images/optimized/groom-1400.jpg" srcset="assets/images/optimized/groom-1400.jpg 933w, assets/images/optimized/groom.jpg 1600w" sizes="(max-width: 760px) 78vw, 55vw" width="1600" height="2400" alt="新郎 翁志彤" loading="eager" decoding="async" fetchpriority="high">
           <figcaption>「我喜歡妳，從我們第一次見面，就喜歡了。」</figcaption>
         </figure>
       </div>
@@ -228,8 +229,9 @@
       </div>
       <div id="player" class="player" hidden>
         <button id="close-video" type="button" aria-label="關閉影片">×</button>
-        <video id="video" controls playsinline preload="metadata" poster="assets/images/optimized/film.jpg">
-          <source src="assets/video/wedding.mp4?v=20260816e" type="video/mp4">
+        <video id="video" controls playsinline preload="none" poster="assets/images/optimized/film.jpg">
+          <source src="assets/video/wedding-mobile.mp4?v=20260816f" type="video/mp4" media="(max-width: 760px)">
+          <source src="assets/video/wedding.mp4?v=20260816f" type="video/mp4">
           您的瀏覽器不支援影片播放。
         </video>
         <div class="video-status" id="video-status" role="status" aria-live="polite" hidden>
@@ -297,6 +299,6 @@
   </button>
   <audio id="bgm" loop preload="none"><source src="assets/audio/music.mp3" type="audio/mpeg"></audio>
 
-  <script src="script.js?v=20260816e"></script>
+  <script src="script.js?v=20260816f"></script>
 </body>
 </html>
