@@ -20,16 +20,14 @@ const pagerNext = pager.querySelector('[data-next]');
 const PAGE_TRANSITION_MS = 920;
 const PAGE_INPUT_LOCK_MS = 280;
 const ENVELOPE_OPEN_MS = 1650;
-const WHEEL_IDLE_RESET_MS = 120;
-const WHEEL_TRIGGER_DISTANCE = 8;
+const WHEEL_IDLE_RESET_MS = 360;
+const WHEEL_TRIGGER_DISTANCE = 18;
 const contentPageCount = pages.length - 1;
 let activePage = 0;
 let navigationLockedUntil = 0;
 let wheelDeltaY = 0;
-let lastWheelAt = 0;
 let wheelGestureHandled = false;
-let pendingWheelDirection = 0;
-let pendingWheelTimer;
+let wheelResetTimer;
 let touchTracking = false;
 let touchStartY = 0;
 let transitionTimer;
@@ -38,7 +36,7 @@ let envelopeOpening = false;
 let musicStartedOnce = false;
 let musicStartPromise = null;
 let resumeMusicAfterVideo = false;
-let videoMetadataRequested = false;
+let videoPreloadRequested = false;
 
 const sleep = delay => new Promise(resolve => window.setTimeout(resolve, delay));
 
@@ -105,6 +103,7 @@ async function revealInvitation() {
   ]);
   document.documentElement.classList.remove('is-loading');
   document.getElementById('site-loader').setAttribute('aria-hidden', 'true');
+  window.setTimeout(startVideoPreload, 0);
 }
 
 document.querySelectorAll('img[loading]').forEach(image => {
@@ -171,7 +170,6 @@ function openInvitation() {
   if (envelope.classList.contains('open')) {
     pager.hidden = false;
     progressWrap.hidden = false;
-    prepareVideoMetadata();
     return showPage(1);
   }
   envelopeOpening = true;
@@ -182,7 +180,6 @@ function openInvitation() {
     envelopeOpening = false;
     pager.hidden = false;
     progressWrap.hidden = false;
-    prepareVideoMetadata();
     showPage(1, { ignoreLock: true });
   }, ENVELOPE_OPEN_MS);
   return true;
@@ -194,33 +191,11 @@ function move(direction) {
   return showPage(activePage + direction);
 }
 
-function cancelPendingWheelNavigation() {
-  pendingWheelDirection = 0;
-  window.clearTimeout(pendingWheelTimer);
-}
-
-function schedulePendingWheelNavigation() {
-  window.clearTimeout(pendingWheelTimer);
-  if (pendingWheelDirection === 0) return;
-  const delay = Math.max(navigationLockedUntil - performance.now(), 0) + 24;
-  pendingWheelTimer = window.setTimeout(() => {
-    if (isNavigationLocked()) {
-      schedulePendingWheelNavigation();
-      return;
-    }
-    const direction = pendingWheelDirection;
-    pendingWheelDirection = 0;
-    move(direction);
-  }, delay);
-}
-
 function moveFromControl(direction) {
-  cancelPendingWheelNavigation();
   return move(direction);
 }
 
 function openInvitationFromControl() {
-  cancelPendingWheelNavigation();
   return openInvitation();
 }
 
@@ -232,12 +207,6 @@ document.querySelectorAll('[data-prev]').forEach(button => button.addEventListen
 function handleWheelNavigation(event) {
   if (event.cancelable) event.preventDefault();
   if (player.hidden === false) return;
-  const now = performance.now();
-  if (now - lastWheelAt > WHEEL_IDLE_RESET_MS) {
-    wheelDeltaY = 0;
-    wheelGestureHandled = false;
-  }
-  lastWheelAt = now;
   const deltaScale = event.deltaMode === 1
     ? 16
     : event.deltaMode === 2 ? window.innerHeight : 1;
@@ -245,20 +214,19 @@ function handleWheelNavigation(event) {
     ? event.deltaY * deltaScale
     : -(event.wheelDelta || 0);
   if (rawDeltaY === 0) return;
+  window.clearTimeout(wheelResetTimer);
+  wheelResetTimer = window.setTimeout(() => {
+    wheelDeltaY = 0;
+    wheelGestureHandled = false;
+  }, WHEEL_IDLE_RESET_MS);
   if (wheelGestureHandled) return;
   if (wheelDeltaY !== 0 && Math.sign(rawDeltaY) !== Math.sign(wheelDeltaY)) wheelDeltaY = 0;
   wheelDeltaY += rawDeltaY;
   if (Math.abs(wheelDeltaY) < WHEEL_TRIGGER_DISTANCE) return;
   const direction = wheelDeltaY > 0 ? 1 : -1;
   wheelDeltaY = 0;
-  if (isNavigationLocked()) {
-    wheelGestureHandled = true;
-    pendingWheelDirection = direction;
-    schedulePendingWheelNavigation();
-    return;
-  }
-  cancelPendingWheelNavigation();
-  wheelGestureHandled = move(direction) === true;
+  wheelGestureHandled = true;
+  if (!isNavigationLocked()) move(direction);
 }
 
 window.addEventListener('wheel', handleWheelNavigation, { passive: false, capture: true });
@@ -338,10 +306,10 @@ function setVideoStatus(message, canRetry = false) {
   retryVideo.hidden = !canRetry;
 }
 
-function prepareVideoMetadata() {
-  if (videoMetadataRequested) return;
-  videoMetadataRequested = true;
-  video.preload = 'metadata';
+function startVideoPreload() {
+  if (videoPreloadRequested) return;
+  videoPreloadRequested = true;
+  video.preload = 'auto';
   video.load();
 }
 
