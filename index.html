@@ -9,16 +9,21 @@
   <link rel="preload" href="assets/fonts/ChenYuluoyan-2.0-Thin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/images/optimized/cover.jpg" as="image" fetchpriority="high">
   <link rel="preload" href="assets/images/optimized/groom-1400.jpg" as="image" imagesrcset="assets/images/optimized/groom-1400.jpg 933w, assets/images/optimized/groom.jpg 1600w" imagesizes="(max-width: 760px) 78vw, 55vw" fetchpriority="high">
+  <link rel="preload" href="assets/images/optimized/bride-1400.jpg" as="image" imagesrcset="assets/images/optimized/bride-1400.jpg 933w, assets/images/optimized/bride.jpg 1600w" imagesizes="(max-width: 760px) 78vw, 55vw" fetchpriority="high">
+  <link rel="preload" href="assets/images/optimized/photo-1400.jpg" as="image" imagesrcset="assets/images/optimized/photo-1400.jpg 1400w, assets/images/optimized/photo.jpg 2400w" imagesizes="100vw" fetchpriority="high">
+  <link rel="preload" href="assets/images/optimized/photo1-1400.jpg" as="image" imagesrcset="assets/images/optimized/photo1-1400.jpg 1400w, assets/images/optimized/photo1.jpg 2400w" imagesizes="(max-width: 760px) 58vw, 58vw" fetchpriority="high">
+  <link rel="preload" href="assets/images/optimized/photo3-1400.jpg" as="image" imagesrcset="assets/images/optimized/photo3-1400.jpg 933w, assets/images/optimized/photo3.jpg 1600w" imagesizes="(max-width: 760px) 35vw, 35vw" fetchpriority="high">
+  <link rel="preload" href="assets/images/optimized/film.jpg" as="image" fetchpriority="high">
+  <link rel="preload" href="assets/images/optimized/dress-code-guests.jpg" as="image" fetchpriority="high">
   <title>志彤 &amp; 涵文｜婚禮邀請</title>
-  <link rel="stylesheet" href="style.css?v=20260816f">
-  <script>window.setTimeout(function(){document.documentElement.classList.remove('is-loading')},7000)</script>
+  <link rel="stylesheet" href="style.css?v=20260816g">
   <noscript><style>html.is-loading .invitation{opacity:1;visibility:visible}html.is-loading .site-loader{display:none}</style></noscript>
 </head>
 <body>
   <div class="site-loader" id="site-loader" role="status" aria-live="polite">
     <div class="site-loader__mark" aria-hidden="true"><span></span></div>
     <p>翁志彤 <i>&amp;</i> 鄭涵文</p>
-    <small>正在展開喜帖</small>
+    <small id="loader-status">正在準備照片</small>
   </div>
 
   <main class="invitation" id="invitation" aria-label="翁志彤與鄭涵文的婚禮邀請">
@@ -141,7 +146,7 @@
           <small>HAN-WEN CHENG</small>
         </div>
         <figure class="portrait-frame">
-        <img src="assets/images/optimized/bride-1400.jpg" srcset="assets/images/optimized/bride-1400.jpg 933w, assets/images/optimized/bride.jpg 1600w" sizes="(max-width: 760px) 78vw, 55vw" width="1600" height="2400" alt="新娘 鄭涵文" loading="lazy" decoding="async" fetchpriority="low">
+        <img src="assets/images/optimized/bride-1400.jpg" srcset="assets/images/optimized/bride-1400.jpg 933w, assets/images/optimized/bride.jpg 1600w" sizes="(max-width: 760px) 78vw, 55vw" width="1600" height="2400" alt="新娘 鄭涵文" loading="eager" decoding="async" fetchpriority="high">
           <figcaption>「如果從來沒有遇見你<br>我的人生現在會是什麼樣子？」</figcaption>
         </figure>
       </div>
@@ -152,7 +157,7 @@
       <span class="page-number light">04</span>
       <span class="story-spark story-spark--a" aria-hidden="true">✦</span>
       <span class="story-spark story-spark--b" aria-hidden="true">✧</span>
-      <img class="story-photo" src="assets/images/optimized/photo-1400.jpg" srcset="assets/images/optimized/photo-1400.jpg 1400w, assets/images/optimized/photo.jpg 2400w" sizes="100vw" width="2400" height="1600" alt="志彤與涵文的婚紗合照" loading="lazy" decoding="async" fetchpriority="low">
+      <img class="story-photo" src="assets/images/optimized/photo-1400.jpg" srcset="assets/images/optimized/photo-1400.jpg 1400w, assets/images/optimized/photo.jpg 2400w" sizes="100vw" width="2400" height="1600" alt="志彤與涵文的婚紗合照" loading="eager" decoding="async" fetchpriority="high">
       <div class="story-shade"></div>
       <div class="story-copy">
         <h2>世界很大，<br>能遇見一個<br>讓你更加珍惜人生的人，<br>我想，<br>那就是人生最大的幸運。</h2>
@@ -211,14 +216,14 @@
         <h2><span>謝謝願意陪伴我們長大的你，</span><span>一同翻開這段屬於我們的故事。</span></h2>
       </div>
       <div class="gallery-grid">
-        <figure class="gallery-a"><img src="assets/images/optimized/photo1-1400.jpg" srcset="assets/images/optimized/photo1-1400.jpg 1400w, assets/images/optimized/photo1.jpg 2400w" sizes="(max-width: 760px) 58vw, 58vw" width="2400" height="1600" alt="婚紗合照一" loading="lazy" decoding="async" fetchpriority="low"></figure>
-        <figure class="gallery-c"><img src="assets/images/optimized/photo3-1400.jpg" srcset="assets/images/optimized/photo3-1400.jpg 933w, assets/images/optimized/photo3.jpg 1600w" sizes="(max-width: 760px) 35vw, 35vw" width="1600" height="2400" alt="志彤與涵文的全身婚紗合照" loading="lazy" decoding="async" fetchpriority="low"></figure>
+        <figure class="gallery-a"><img src="assets/images/optimized/photo1-1400.jpg" srcset="assets/images/optimized/photo1-1400.jpg 1400w, assets/images/optimized/photo1.jpg 2400w" sizes="(max-width: 760px) 58vw, 58vw" width="2400" height="1600" alt="婚紗合照一" loading="eager" decoding="async" fetchpriority="high"></figure>
+        <figure class="gallery-c"><img src="assets/images/optimized/photo3-1400.jpg" srcset="assets/images/optimized/photo3-1400.jpg 933w, assets/images/optimized/photo3.jpg 1600w" sizes="(max-width: 760px) 35vw, 35vw" width="1600" height="2400" alt="志彤與涵文的全身婚紗合照" loading="eager" decoding="async" fetchpriority="high"></figure>
       </div>
     </section>
 
     <section class="page page--film" data-page="6">
       <span class="page-number light">05</span>
-      <img class="film-bg" src="assets/images/optimized/film.jpg" width="1280" height="925" alt="志彤與涵文在富士山前比出愛心手勢" loading="lazy" decoding="async" fetchpriority="low">
+      <img class="film-bg" src="assets/images/optimized/film.jpg" width="1280" height="925" alt="志彤與涵文在富士山前比出愛心手勢" loading="eager" decoding="async" fetchpriority="high">
       <div class="film-shade"></div>
       <div class="film-copy" id="film-copy">
         <p class="eyebrow light">WEDDING FILM</p>
@@ -230,8 +235,7 @@
       <div id="player" class="player" hidden>
         <button id="close-video" type="button" aria-label="關閉影片">×</button>
         <video id="video" controls playsinline preload="none" poster="assets/images/optimized/film.jpg">
-          <source src="assets/video/wedding-mobile.mp4?v=20260816f" type="video/mp4" media="(max-width: 760px)">
-          <source src="assets/video/wedding.mp4?v=20260816f" type="video/mp4">
+          <source src="assets/video/wedding.mp4?v=20260816g" type="video/mp4">
           您的瀏覽器不支援影片播放。
         </video>
         <div class="video-status" id="video-status" role="status" aria-live="polite" hidden>
@@ -259,7 +263,7 @@
           <h2>DRESS CODE</h2>
           <p>A guide to wedding guest attire</p>
         </header>
-        <img class="dress-illustration" src="assets/images/optimized/dress-code-guests.jpg" width="1536" height="1024" alt="柔和色系的婚禮賓客穿搭示意" loading="lazy" decoding="async" fetchpriority="low">
+        <img class="dress-illustration" src="assets/images/optimized/dress-code-guests.jpg" width="1536" height="1024" alt="柔和色系的婚禮賓客穿搭示意" loading="eager" decoding="async" fetchpriority="high">
         <p class="dress-intro">奶茶／淺藍／淺粉／淺綠</p>
         <div class="dress-guides">
           <section>
@@ -299,6 +303,6 @@
   </button>
   <audio id="bgm" loop preload="none"><source src="assets/audio/music.mp3" type="audio/mpeg"></audio>
 
-  <script src="script.js?v=20260816f"></script>
+  <script src="script.js?v=20260816g"></script>
 </body>
 </html>

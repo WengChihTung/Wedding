@@ -14,13 +14,14 @@ const videoStatusText = document.getElementById('video-status-text');
 const retryVideo = document.getElementById('retry-video');
 const bgm = document.getElementById('bgm');
 const musicControl = document.getElementById('music-control');
+const loaderStatus = document.getElementById('loader-status');
 const pagerPrevious = pager.querySelector('[data-prev]');
 const pagerNext = pager.querySelector('[data-next]');
-const groomImage = pages.find(page => page.dataset.page === '3')?.querySelector('img');
 const PAGE_TRANSITION_MS = 920;
+const PAGE_INPUT_LOCK_MS = 280;
 const ENVELOPE_OPEN_MS = 1650;
-const WHEEL_IDLE_RESET_MS = 220;
-const WHEEL_TRIGGER_DISTANCE = 20;
+const WHEEL_IDLE_RESET_MS = 120;
+const WHEEL_TRIGGER_DISTANCE = 8;
 const contentPageCount = pages.length - 1;
 let activePage = 0;
 let navigationLockedUntil = 0;
@@ -34,13 +35,10 @@ let touchStartY = 0;
 let transitionTimer;
 let envelopeTimer;
 let envelopeOpening = false;
-let activeImageLoads = 0;
 let musicStartedOnce = false;
 let musicStartPromise = null;
 let resumeMusicAfterVideo = false;
-let videoWarmStage = 0;
-const imageQueue = [];
-const queuedImages = new WeakSet();
+let videoMetadataRequested = false;
 
 const sleep = delay => new Promise(resolve => window.setTimeout(resolve, delay));
 
@@ -73,38 +71,6 @@ function prepareImage(image, priority = 'low') {
   });
 }
 
-function runImageQueue() {
-  imageQueue.sort((a, b) => (a.priority === 'high' ? -1 : 1) - (b.priority === 'high' ? -1 : 1));
-  while (activeImageLoads < 2 && imageQueue.length) {
-    const { image, priority } = imageQueue.shift();
-    activeImageLoads += 1;
-    prepareImage(image, priority).finally(() => {
-      activeImageLoads -= 1;
-      runImageQueue();
-    });
-  }
-}
-
-function queueImage(image, priority) {
-  if (queuedImages.has(image)) {
-    const queued = imageQueue.find(item => item.image === image);
-    if (queued && priority === 'high') queued.priority = 'high';
-    runImageQueue();
-    return;
-  }
-  queuedImages.add(image);
-  imageQueue.push({ image, priority });
-  runImageQueue();
-}
-
-function warmNearbyPages(index) {
-  pages.slice(index, index + 3).forEach((page, pageOffset) => {
-    page.querySelectorAll('img[loading]').forEach(image => {
-      queueImage(image, pageOffset === 0 ? 'high' : 'low');
-    });
-  });
-}
-
 function preloadCover() {
   return new Promise(resolve => {
     const cover = new Image();
@@ -123,15 +89,22 @@ async function revealInvitation() {
   const fontReady = document.fonts
     ? document.fonts.load('1em "ChenYuluoyan"').catch(() => {})
     : Promise.resolve();
-  if (groomImage) queuedImages.add(groomImage);
-  const groomReady = prepareImage(groomImage, 'high');
-  await Promise.race([
-    Promise.all([fontReady, preloadCover(), groomReady, sleep(420)]),
-    sleep(5500)
+  const siteImages = [...document.querySelectorAll('img[loading]')];
+  const totalImages = siteImages.length + 1;
+  let completedImages = 0;
+  const trackImage = promise => promise.finally(() => {
+    completedImages += 1;
+    loaderStatus.textContent = `正在準備照片 ${completedImages}/${totalImages}`;
+  });
+  loaderStatus.textContent = `正在準備照片 0/${totalImages}`;
+  await Promise.all([
+    fontReady,
+    sleep(420),
+    trackImage(preloadCover()),
+    ...siteImages.map(image => trackImage(prepareImage(image, 'high')))
   ]);
   document.documentElement.classList.remove('is-loading');
   document.getElementById('site-loader').setAttribute('aria-hidden', 'true');
-  warmNearbyPages(0);
 }
 
 document.querySelectorAll('img[loading]').forEach(image => {
@@ -160,7 +133,7 @@ function showPage(index, { ignoreLock = false } = {}) {
   if (isNavigationLocked() && !ignoreLock) return false;
   const next = Math.max(0, Math.min(index, pages.length - 1));
   if (next === activePage) return false;
-  lockNavigation(PAGE_TRANSITION_MS);
+  lockNavigation(PAGE_INPUT_LOCK_MS);
   const direction = next > activePage ? 1 : -1;
   const previousPage = pages[activePage];
   const nextPage = pages[next];
@@ -186,8 +159,6 @@ function showPage(index, { ignoreLock = false } = {}) {
   progress.style.width = `${(Math.max(activePage, 1) / contentPageCount) * 100}%`;
   pagerPrevious.disabled = activePage === 0;
   pagerNext.disabled = activePage === pages.length - 1;
-  warmNearbyPages(activePage);
-  if (activePage >= 4) scheduleVideoWarmup(nextPage);
   transitionTimer = window.setTimeout(() => {
     previousPage.classList.remove('is-leaving-up', 'is-leaving-down');
   }, PAGE_TRANSITION_MS);
@@ -200,7 +171,7 @@ function openInvitation() {
   if (envelope.classList.contains('open')) {
     pager.hidden = false;
     progressWrap.hidden = false;
-    warmVideo(1);
+    prepareVideoMetadata();
     return showPage(1);
   }
   envelopeOpening = true;
@@ -211,7 +182,7 @@ function openInvitation() {
     envelopeOpening = false;
     pager.hidden = false;
     progressWrap.hidden = false;
-    warmVideo(1);
+    prepareVideoMetadata();
     showPage(1, { ignoreLock: true });
   }, ENVELOPE_OPEN_MS);
   return true;
@@ -367,28 +338,15 @@ function setVideoStatus(message, canRetry = false) {
   retryVideo.hidden = !canRetry;
 }
 
-function warmVideo(stage) {
-  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  const shouldLimitPreload = connection?.saveData || ['slow-2g', '2g'].includes(connection?.effectiveType);
-  const nextStage = stage > 1 && !shouldLimitPreload ? 2 : 1;
-  if (videoWarmStage >= nextStage) return;
-  videoWarmStage = nextStage;
-  video.preload = nextStage === 2 ? 'auto' : 'metadata';
+function prepareVideoMetadata() {
+  if (videoMetadataRequested) return;
+  videoMetadataRequested = true;
+  video.preload = 'metadata';
   video.load();
-}
-
-function scheduleVideoWarmup(page) {
-  if (videoWarmStage >= 2) return;
-  const pageImages = [...page.querySelectorAll('img[loading]')];
-  const currentImagesReady = Promise.all(pageImages.map(image => prepareImage(image, 'high')));
-  Promise.race([currentImagesReady, sleep(1400)]).then(() => {
-    if (activePage >= 4) warmVideo(2);
-  });
 }
 
 function requestVideoPlayback({ reload = false } = {}) {
   video.preload = 'auto';
-  videoWarmStage = 2;
   if (reload || video.readyState === 0) video.load();
   setVideoStatus('影片載入中…');
   return video.play().catch(() => {
