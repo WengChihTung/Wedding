@@ -13,10 +13,18 @@ const bgm = document.getElementById('bgm');
 const musicControl = document.getElementById('music-control');
 const pagerPrevious = pager.querySelector('[data-prev]');
 const pagerNext = pager.querySelector('[data-next]');
+const PAGE_TRANSITION_MS = 920;
+const ENVELOPE_OPEN_MS = 1650;
+const WHEEL_GESTURE_END_MS = 180;
+const contentPageCount = pages.length - 1;
 let activePage = 0;
-let wheelLocked = false;
+let navigationLocked = false;
+let wheelGestureConsumed = false;
+let touchTracking = false;
 let touchStartY = 0;
 let transitionTimer;
+let navigationUnlockTimer;
+let wheelGestureTimer;
 let envelopeTimer;
 let envelopeOpening = false;
 let activeImageLoads = 0;
@@ -127,11 +135,21 @@ document.querySelectorAll('img[loading]').forEach(image => {
 
 revealInvitation();
 
-total.textContent = String(pages.length).padStart(2, '0');
+total.textContent = String(contentPageCount).padStart(2, '0');
 
-function showPage(index) {
+function lockNavigation(duration) {
+  navigationLocked = true;
+  window.clearTimeout(navigationUnlockTimer);
+  navigationUnlockTimer = window.setTimeout(() => {
+    navigationLocked = false;
+  }, duration);
+}
+
+function showPage(index, { ignoreLock = false } = {}) {
+  if (navigationLocked && !ignoreLock) return false;
   const next = Math.max(0, Math.min(index, pages.length - 1));
-  if (next === activePage) return;
+  if (next === activePage) return false;
+  lockNavigation(PAGE_TRANSITION_MS);
   const direction = next > activePage ? 1 : -1;
   const previousPage = pages[activePage];
   const nextPage = pages[next];
@@ -146,24 +164,27 @@ function showPage(index) {
     envelopeOpening = false;
     envelope.classList.remove('open');
     envelope.setAttribute('aria-expanded', 'false');
+    pager.hidden = true;
+    progressWrap.hidden = true;
   }
   if (direction < 0) nextPage.classList.add('enter-from-top');
   void nextPage.offsetWidth;
   nextPage.classList.add('is-active');
   nextPage.classList.remove('enter-from-top');
-  current.textContent = String(activePage + 1).padStart(2, '0');
-  progress.style.width = `${((activePage + 1) / pages.length) * 100}%`;
+  current.textContent = String(Math.max(activePage, 1)).padStart(2, '0');
+  progress.style.width = `${(Math.max(activePage, 1) / contentPageCount) * 100}%`;
   pagerPrevious.disabled = activePage === 0;
   pagerNext.disabled = activePage === pages.length - 1;
   warmNearbyPages(activePage);
   transitionTimer = window.setTimeout(() => {
     previousPage.classList.remove('is-leaving-up', 'is-leaving-down');
-  }, 920);
+  }, PAGE_TRANSITION_MS);
+  return true;
 }
 
 function openInvitation() {
   if (!musicStartedOnce) playBackgroundMusic();
-  if (envelopeOpening) return;
+  if (envelopeOpening || navigationLocked) return;
   if (envelope.classList.contains('open')) {
     pager.hidden = false;
     progressWrap.hidden = false;
@@ -171,19 +192,21 @@ function openInvitation() {
     return;
   }
   envelopeOpening = true;
+  lockNavigation(ENVELOPE_OPEN_MS);
   envelope.classList.add('open');
   envelope.setAttribute('aria-expanded', 'true');
   envelopeTimer = window.setTimeout(() => {
     envelopeOpening = false;
     pager.hidden = false;
     progressWrap.hidden = false;
-    showPage(1);
-  }, 1650);
+    showPage(1, { ignoreLock: true });
+  }, ENVELOPE_OPEN_MS);
 }
 
 function move(direction) {
+  if (navigationLocked) return false;
   if (activePage === 0 && direction > 0) return openInvitation();
-  showPage(activePage + direction);
+  return showPage(activePage + direction);
 }
 
 envelope.addEventListener('click', openInvitation);
@@ -193,26 +216,47 @@ document.querySelectorAll('[data-prev]').forEach(button => button.addEventListen
 
 window.addEventListener('wheel', event => {
   event.preventDefault();
-  if (wheelLocked || Math.abs(event.deltaY) < 30 || player.hidden === false) return;
-  wheelLocked = true;
+  window.clearTimeout(wheelGestureTimer);
+  wheelGestureTimer = window.setTimeout(() => {
+    wheelGestureConsumed = false;
+  }, WHEEL_GESTURE_END_MS);
+  if (wheelGestureConsumed || navigationLocked || Math.abs(event.deltaY) < 30 || player.hidden === false) return;
+  wheelGestureConsumed = true;
   move(event.deltaY > 0 ? 1 : -1);
-  window.setTimeout(() => { wheelLocked = false; }, 620);
 }, { passive: false });
 
 window.addEventListener('keydown', event => {
-  if (event.key === 'Escape') closeVideo();
+  if (event.key === 'Escape' && player.hidden === false) {
+    event.preventDefault();
+    closeVideo();
+    return;
+  }
   if (player.hidden === false) return;
-  if (['ArrowDown', 'PageDown', ' '].includes(event.key)) move(1);
-  if (['ArrowUp', 'PageUp'].includes(event.key)) move(-1);
+  const target = event.target;
+  const isInteractive = target instanceof Element && target.closest('button,a,input,textarea,select,video,audio,[contenteditable="true"]');
+  if (isInteractive || event.repeat) return;
+  if (['ArrowDown', 'PageDown', ' '].includes(event.key)) {
+    event.preventDefault();
+    move(1);
+  }
+  if (['ArrowUp', 'PageUp'].includes(event.key)) {
+    event.preventDefault();
+    move(-1);
+  }
 });
 
 window.addEventListener('touchstart', event => {
+  touchTracking = navigationLocked === false && player.hidden !== false;
   touchStartY = event.changedTouches[0].screenY;
 }, { passive: true });
 window.addEventListener('touchend', event => {
-  if (player.hidden === false) return;
+  if (!touchTracking || navigationLocked || player.hidden === false) return;
+  touchTracking = false;
   const distance = touchStartY - event.changedTouches[0].screenY;
   if (Math.abs(distance) > 48) move(distance > 0 ? 1 : -1);
+}, { passive: true });
+window.addEventListener('touchcancel', () => {
+  touchTracking = false;
 }, { passive: true });
 
 const weddingTime = new Date('2026-09-12T10:00:00+08:00').getTime();
