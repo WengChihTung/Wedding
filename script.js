@@ -15,20 +15,23 @@ const pagerPrevious = pager.querySelector('[data-prev]');
 const pagerNext = pager.querySelector('[data-next]');
 const PAGE_TRANSITION_MS = 920;
 const ENVELOPE_OPEN_MS = 1650;
-const WHEEL_GESTURE_END_MS = 180;
+const WHEEL_GESTURE_END_MS = 220;
+const WHEEL_TRIGGER_DISTANCE = 48;
 const contentPageCount = pages.length - 1;
 let activePage = 0;
-let navigationLocked = false;
+let navigationLockedUntil = 0;
 let wheelGestureConsumed = false;
+let wheelDeltaY = 0;
+let lastWheelAt = 0;
 let touchTracking = false;
 let touchStartY = 0;
 let transitionTimer;
-let navigationUnlockTimer;
 let wheelGestureTimer;
 let envelopeTimer;
 let envelopeOpening = false;
 let activeImageLoads = 0;
 let musicStartedOnce = false;
+let musicStartPromise = null;
 let resumeMusicAfterVideo = false;
 const imageQueue = [];
 const queuedImages = new WeakSet();
@@ -137,16 +140,16 @@ revealInvitation();
 
 total.textContent = String(contentPageCount).padStart(2, '0');
 
+function isNavigationLocked() {
+  return performance.now() < navigationLockedUntil;
+}
+
 function lockNavigation(duration) {
-  navigationLocked = true;
-  window.clearTimeout(navigationUnlockTimer);
-  navigationUnlockTimer = window.setTimeout(() => {
-    navigationLocked = false;
-  }, duration);
+  navigationLockedUntil = performance.now() + duration;
 }
 
 function showPage(index, { ignoreLock = false } = {}) {
-  if (navigationLocked && !ignoreLock) return false;
+  if (isNavigationLocked() && !ignoreLock) return false;
   const next = Math.max(0, Math.min(index, pages.length - 1));
   if (next === activePage) return false;
   lockNavigation(PAGE_TRANSITION_MS);
@@ -184,12 +187,11 @@ function showPage(index, { ignoreLock = false } = {}) {
 
 function openInvitation() {
   if (!musicStartedOnce) playBackgroundMusic();
-  if (envelopeOpening || navigationLocked) return;
+  if (envelopeOpening || isNavigationLocked()) return false;
   if (envelope.classList.contains('open')) {
     pager.hidden = false;
     progressWrap.hidden = false;
-    showPage(1);
-    return;
+    return showPage(1);
   }
   envelopeOpening = true;
   lockNavigation(ENVELOPE_OPEN_MS);
@@ -201,10 +203,11 @@ function openInvitation() {
     progressWrap.hidden = false;
     showPage(1, { ignoreLock: true });
   }, ENVELOPE_OPEN_MS);
+  return true;
 }
 
 function move(direction) {
-  if (navigationLocked) return false;
+  if (isNavigationLocked()) return false;
   if (activePage === 0 && direction > 0) return openInvitation();
   return showPage(activePage + direction);
 }
@@ -214,15 +217,34 @@ document.getElementById('open-hint').addEventListener('click', openInvitation);
 document.querySelectorAll('[data-next]').forEach(button => button.addEventListener('click', () => move(1)));
 document.querySelectorAll('[data-prev]').forEach(button => button.addEventListener('click', () => move(-1)));
 
+function resetWheelGesture() {
+  wheelGestureConsumed = false;
+  wheelDeltaY = 0;
+}
+
 window.addEventListener('wheel', event => {
   event.preventDefault();
+  const now = performance.now();
+  if (now - lastWheelAt > WHEEL_GESTURE_END_MS) resetWheelGesture();
+  lastWheelAt = now;
   window.clearTimeout(wheelGestureTimer);
-  wheelGestureTimer = window.setTimeout(() => {
-    wheelGestureConsumed = false;
-  }, WHEEL_GESTURE_END_MS);
-  if (wheelGestureConsumed || navigationLocked || Math.abs(event.deltaY) < 30 || player.hidden === false) return;
+  wheelGestureTimer = window.setTimeout(resetWheelGesture, WHEEL_GESTURE_END_MS);
+  if (player.hidden === false) return;
+  if (isNavigationLocked()) {
+    wheelGestureConsumed = true;
+    wheelDeltaY = 0;
+    return;
+  }
+  if (wheelGestureConsumed) return;
+  const deltaScale = event.deltaMode === WheelEvent.DOM_DELTA_LINE
+    ? 16
+    : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? window.innerHeight : 1;
+  wheelDeltaY += event.deltaY * deltaScale;
+  if (Math.abs(wheelDeltaY) < WHEEL_TRIGGER_DISTANCE) return;
   wheelGestureConsumed = true;
-  move(event.deltaY > 0 ? 1 : -1);
+  const direction = wheelDeltaY > 0 ? 1 : -1;
+  wheelDeltaY = 0;
+  move(direction);
 }, { passive: false });
 
 window.addEventListener('keydown', event => {
@@ -246,14 +268,21 @@ window.addEventListener('keydown', event => {
 });
 
 window.addEventListener('touchstart', event => {
-  touchTracking = navigationLocked === false && player.hidden !== false;
+  touchTracking = !isNavigationLocked() && player.hidden !== false;
   touchStartY = event.changedTouches[0].screenY;
+  if (touchTracking && activePage === 0 && !musicStartedOnce && bgm.readyState === HTMLMediaElement.HAVE_NOTHING) {
+    bgm.load();
+  }
 }, { passive: true });
 window.addEventListener('touchend', event => {
-  if (!touchTracking || navigationLocked || player.hidden === false) return;
+  if (!touchTracking) return;
   touchTracking = false;
+  if (isNavigationLocked() || player.hidden === false) return;
   const distance = touchStartY - event.changedTouches[0].screenY;
-  if (Math.abs(distance) > 48) move(distance > 0 ? 1 : -1);
+  if (Math.abs(distance) > 48) {
+    if (activePage === 0 && distance > 0 && !musicStartedOnce) playBackgroundMusic();
+    move(distance > 0 ? 1 : -1);
+  }
 }, { passive: true });
 window.addEventListener('touchcancel', () => {
   touchTracking = false;
@@ -304,12 +333,16 @@ function updateMusicControl(isPlaying) {
 }
 
 function playBackgroundMusic() {
-  return bgm.play().then(() => {
+  if (musicStartPromise) return musicStartPromise;
+  musicStartPromise = bgm.play().then(() => {
     musicStartedOnce = true;
     updateMusicControl(true);
   }).catch(() => {
     updateMusicControl(false);
+  }).finally(() => {
+    musicStartPromise = null;
   });
+  return musicStartPromise;
 }
 
 bgm.volume = .42;
