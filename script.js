@@ -20,6 +20,8 @@ let transitionTimer;
 let envelopeTimer;
 let envelopeOpening = false;
 let activeImageLoads = 0;
+let musicStartedOnce = false;
+let resumeMusicAfterVideo = false;
 const imageQueue = [];
 const queuedImages = new WeakSet();
 
@@ -160,6 +162,7 @@ function showPage(index) {
 }
 
 function openInvitation() {
+  if (!musicStartedOnce) playBackgroundMusic();
   if (envelopeOpening) return;
   if (envelope.classList.contains('open')) {
     pager.hidden = false;
@@ -229,26 +232,51 @@ updateCountdown();
 window.setInterval(updateCountdown, 1000);
 
 function closeVideo() {
+  const shouldResumeMusic = resumeMusicAfterVideo;
+  resumeMusicAfterVideo = false;
   video.pause();
   player.hidden = true;
   filmCopy.hidden = false;
-  if (musicControl.classList.contains('playing')) bgm.play().catch(() => {});
+  musicControl.disabled = false;
+  if (shouldResumeMusic) playBackgroundMusic();
 }
 
 document.getElementById('play').addEventListener('click', () => {
+  resumeMusicAfterVideo = !bgm.paused;
   bgm.pause();
+  updateMusicControl(false);
+  musicControl.disabled = true;
   filmCopy.hidden = true;
   player.hidden = false;
-  video.play().catch(() => {});
+  video.play().catch(closeVideo);
 });
 document.getElementById('close-video').addEventListener('click', closeVideo);
 video.addEventListener('ended', closeVideo);
 
+function updateMusicControl(isPlaying) {
+  musicControl.classList.toggle('playing', isPlaying);
+  musicControl.setAttribute('aria-pressed', String(isPlaying));
+  musicControl.setAttribute('aria-label', isPlaying ? '暫停背景音樂' : '播放背景音樂');
+}
+
+function playBackgroundMusic() {
+  return bgm.play().then(() => {
+    musicStartedOnce = true;
+    updateMusicControl(true);
+  }).catch(() => {
+    updateMusicControl(false);
+  });
+}
+
+bgm.volume = .42;
+bgm.addEventListener('play', () => updateMusicControl(true));
+bgm.addEventListener('pause', () => updateMusicControl(false));
+
 musicControl.addEventListener('click', () => {
+  if (musicControl.disabled) return;
   if (bgm.paused) {
-    bgm.play().then(() => musicControl.classList.add('playing')).catch(() => {});
+    playBackgroundMusic();
   } else {
     bgm.pause();
-    musicControl.classList.remove('playing');
   }
 });
