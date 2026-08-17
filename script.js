@@ -316,7 +316,7 @@ function startVideoPreload() {
 function requestVideoPlayback({ reload = false } = {}) {
   video.preload = 'auto';
   if (reload || video.readyState === 0) video.load();
-  setVideoStatus('影片載入中…');
+  setVideoStatus(video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA ? '' : '影片載入中…');
   return video.play().catch(() => {
     if (player.hidden === false) setVideoStatus('影片暫時無法播放', true);
   });
@@ -335,11 +335,11 @@ document.getElementById('close-video').addEventListener('click', closeVideo);
 retryVideo.addEventListener('click', () => requestVideoPlayback({ reload: true }));
 video.addEventListener('canplay', () => setVideoStatus(''));
 video.addEventListener('playing', () => setVideoStatus(''));
+video.addEventListener('timeupdate', () => {
+  if (player.hidden === false && !video.paused) setVideoStatus('');
+});
 video.addEventListener('waiting', () => {
   if (player.hidden === false) setVideoStatus('影片載入中…');
-});
-video.addEventListener('stalled', () => {
-  if (player.hidden === false) setVideoStatus('網路較慢，影片仍在載入…');
 });
 video.addEventListener('error', () => {
   if (player.hidden === false) setVideoStatus('影片載入失敗', true);
