@@ -23,10 +23,6 @@ const ENVELOPE_OPEN_MS = 1650;
 const WHEEL_IDLE_RESET_MS = 360;
 const WHEEL_TRIGGER_DISTANCE = 18;
 const WHEEL_REARM_GAP_MS = 160;
-const WHEEL_REARM_DISCRETE_DISTANCE = 32;
-const WHEEL_REARM_MIN_DISTANCE = 8;
-const WHEEL_REARM_RISE_RATIO = 1.25;
-const WHEEL_REARM_RISE_STEP = 2;
 const contentPageCount = pages.length - 1;
 let activePage = 0;
 let navigationLockedUntil = 0;
@@ -34,8 +30,6 @@ let wheelDeltaY = 0;
 let wheelGestureHandled = false;
 let wheelResetTimer;
 let wheelLastEventAt = -Infinity;
-let wheelLastDeltaY = 0;
-let wheelRearmRiseCount = 0;
 let touchTracking = false;
 let touchStartY = 0;
 let transitionTimer;
@@ -216,8 +210,6 @@ function resetWheelGesture() {
   wheelDeltaY = 0;
   wheelGestureHandled = false;
   wheelLastEventAt = -Infinity;
-  wheelLastDeltaY = 0;
-  wheelRearmRiseCount = 0;
 }
 
 function handleWheelNavigation(event) {
@@ -232,42 +224,19 @@ function handleWheelNavigation(event) {
   if (rawDeltaY === 0) return;
   const eventTime = performance.now();
   const eventGap = eventTime - wheelLastEventAt;
-  const magnitude = Math.abs(rawDeltaY);
-  const previousMagnitude = Math.abs(wheelLastDeltaY);
-  const sameDirectionAsPrevious = wheelLastDeltaY === 0
-    || Math.sign(rawDeltaY) === Math.sign(wheelLastDeltaY);
   window.clearTimeout(wheelResetTimer);
   wheelResetTimer = window.setTimeout(resetWheelGesture, WHEEL_IDLE_RESET_MS);
   if (wheelGestureHandled) {
     if (isNavigationLocked()) {
-      wheelRearmRiseCount = 0;
       wheelLastEventAt = eventTime;
-      wheelLastDeltaY = rawDeltaY;
       return;
     }
-    const restartedAfterPause = eventGap >= WHEEL_REARM_GAP_MS
-      && magnitude >= WHEEL_REARM_DISCRETE_DISTANCE;
-    const isRenewedRise = sameDirectionAsPrevious
-      && magnitude >= WHEEL_REARM_MIN_DISTANCE
-      && magnitude - previousMagnitude >= WHEEL_REARM_RISE_STEP
-      && magnitude >= previousMagnitude * WHEEL_REARM_RISE_RATIO;
-    if (!sameDirectionAsPrevious) {
-      wheelRearmRiseCount = 0;
-    } else if (isRenewedRise) {
-      wheelRearmRiseCount += 1;
-    } else {
-      wheelRearmRiseCount = 0;
-    }
-    const restartedWithImpulse = wheelRearmRiseCount >= 2;
     wheelLastEventAt = eventTime;
-    wheelLastDeltaY = rawDeltaY;
-    if (!restartedAfterPause && !restartedWithImpulse) return;
+    if (eventGap < WHEEL_REARM_GAP_MS) return;
     wheelDeltaY = 0;
     wheelGestureHandled = false;
-    wheelRearmRiseCount = 0;
   } else {
     wheelLastEventAt = eventTime;
-    wheelLastDeltaY = rawDeltaY;
   }
   if (wheelDeltaY !== 0 && Math.sign(rawDeltaY) !== Math.sign(wheelDeltaY)) wheelDeltaY = 0;
   wheelDeltaY += rawDeltaY;
@@ -275,7 +244,6 @@ function handleWheelNavigation(event) {
   const direction = wheelDeltaY > 0 ? 1 : -1;
   wheelDeltaY = 0;
   wheelGestureHandled = true;
-  wheelRearmRiseCount = 0;
   if (!isNavigationLocked()) move(direction);
 }
 
